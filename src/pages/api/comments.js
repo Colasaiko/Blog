@@ -1,9 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
 export const prerender = false;
-
-const dataFile = path.join(process.cwd(), 'src', 'data', 'comments.json');
 
 // Simple in-memory rate limiter for comments
 const rateLimitMap = new Map();
@@ -39,31 +34,65 @@ function escapeHTML(str) {
     .replace(/'/g, '&#039;');
 }
 
-function getComments() {
-  if (!fs.existsSync(dataFile)) {
-    return [];
-  }
+export async function GET({ locals }) {
   try {
-    return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
-  } catch (e) {
-    return [];
+    const db = locals.runtime.env.DB;
+    // Query all comments, order by created_at desc for top level, asc for replies (or let JS handle sorting)
+    const { results } = await db.prepare('SELECT * FROM comments ORDER BY created_at ASC').all();
+    
+    // Assemble nested structure
+    const topLevelMap = new Map();
+    const replies = [];
+
+    for (const row of results) {
+      const comment = {
+        id: row.id,
+        username: row.username,
+        text: row.text,
+        createdAt: row.created_at,
+        likes: row.likes,
+        replies: []
+      };
+
+      if (row.parent_id) {
+        if (row.reply_to_user) {
+          comment.replyToUser = row.reply_to_user;
+        }
+        comment.parentId = row.parent_id;
+        replies.push(comment);
+      } else {
+        topLevelMap.set(row.id, comment);
+      }
+    }
+
+    // Attach replies to their parents
+    for (const reply of replies) {
+      const parent = topLevelMap.get(reply.parentId);
+      if (parent) {
+        parent.replies.push(reply);
+      }
+    }
+
+    // Convert map to array and sort by created_at DESC (as the original JSON was reversed)
+    const finalComments = Array.from(topLevelMap.values()).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    return new Response(JSON.stringify(finalComments), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    return new Response(JSON.stringify([]), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
 
-function saveComments(comments) {
-  fs.writeFileSync(dataFile, JSON.stringify(comments, null, 2), 'utf8');
-}
-
-export async function GET() {
-  const comments = getComments();
-  return new Response(JSON.stringify(comments.reverse()), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
-
-export async function POST({ request, clientAddress }) {
+export async function POST({ request, clientAddress, locals }) {
   try {
+    const db = locals.runtime.env.DB;
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || clientAddress || 'unknown';
     
     if (!checkRateLimit(ip)) {
@@ -104,25 +133,29 @@ export async function POST({ request, clientAddress }) {
     
     // XSS 防护转义
     const safeText = escapeHTML(data.text.trim());
+    const id = Date.now().toString() + Math.random().toString(36).substring(2, 5);
+    const createdAt = new Date().toISOString();
     
     const newComment = {
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 5),
+      id,
       username,
       text: safeText,
-      createdAt: new Date().toISOString(),
+      createdAt,
       likes: 0
     };
 
-    const comments = getComments();
+    let parent_id = null;
+    let reply_to_user = null;
 
     if (data.parentId) {
-      const parent = comments.find(c => c.id === data.parentId);
-      if (parent) {
+      // 验证父评论是否存在
+      const { results: parentRes } = await db.prepare('SELECT id FROM comments WHERE id = ?').bind(data.parentId).all();
+      if (parentRes.length > 0) {
+        parent_id = data.parentId;
         if (data.replyToUser && typeof data.replyToUser === 'string') {
-          newComment.replyToUser = escapeHTML(data.replyToUser.substring(0, 50));
+          reply_to_user = escapeHTML(data.replyToUser.substring(0, 50));
+          newComment.replyToUser = reply_to_user;
         }
-        if (!parent.replies) parent.replies = [];
-        parent.replies.push(newComment);
       } else {
         return new Response(JSON.stringify({ error: '父评论不存在' }), { 
           status: 404,
@@ -131,10 +164,13 @@ export async function POST({ request, clientAddress }) {
       }
     } else {
       newComment.replies = [];
-      comments.push(newComment);
     }
 
-    saveComments(comments);
+    await db.prepare(
+      'INSERT INTO comments (id, username, text, created_at, likes, parent_id, reply_to_user) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).bind(
+      id, username, safeText, createdAt, 0, parent_id, reply_to_user
+    ).run();
 
     return new Response(JSON.stringify(newComment), { 
       status: 201,
@@ -148,8 +184,9 @@ export async function POST({ request, clientAddress }) {
   }
 }
 
-export async function DELETE({ request }) {
+export async function DELETE({ request, locals }) {
   try {
+    const db = locals.runtime.env.DB;
     const data = await request.json();
     const ADMIN_PASS = import.meta.env.ADMIN_PASS || process.env.ADMIN_PASS; 
     if (data.password !== ADMIN_PASS) {
@@ -158,22 +195,15 @@ export async function DELETE({ request }) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
-
-    const comments = getComments();
     
     if (data.parentId) {
-      const parent = comments.find(c => c.id === data.parentId);
-      if (parent && parent.replies) {
-        parent.replies = parent.replies.filter(c => c.id !== data.id);
-      }
+      // 删除回复
+      await db.prepare('DELETE FROM comments WHERE id = ? AND parent_id = ?').bind(data.id, data.parentId).run();
     } else {
-      const idx = comments.findIndex(c => c.id === data.id);
-      if (idx !== -1) {
-        comments.splice(idx, 1);
-      }
+      // 删除顶级评论及其回复
+      await db.prepare('DELETE FROM comments WHERE id = ? OR parent_id = ?').bind(data.id, data.id).run();
     }
     
-    saveComments(comments);
     return new Response(JSON.stringify({ success: true }), { 
       status: 200,
       headers: { 'Content-Type': 'application/json' }

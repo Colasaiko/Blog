@@ -1,4 +1,5 @@
-import getReadingTime from 'reading-time';
+// @ts-ignore
+import getReadingTime from 'reading-time/lib/reading-time.js';
 
 export function readingTime(content: string) {
   const stats = getReadingTime(content);

@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS comments ( id TEXT PRIMARY KEY, username TEXT NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL, likes INTEGER NOT NULL DEFAULT 0, parent_id TEXT, reply_to_user TEXT ); 

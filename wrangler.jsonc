@@ -1,0 +1,11 @@
+{  
+  \" "name\: \bestjichang-blog\,  
+  \compatibility_date\: \2024-04-01\,  
+  \d1_databases\: [  
+    {  
+      \binding\: \DB\,  
+      \database_name\: \bestjichang-comments\,  
+      \database_id\: \your-database-id-here\  
+    }  
+  ]  
+} 
