@@ -1,11 +1,11 @@
-{  
-  \" "name\: \bestjichang-blog\,  
-  \compatibility_date\: \2024-04-01\,  
-  \d1_databases\: [  
-    {  
-      \binding\: \DB\,  
-      \database_name\: \bestjichang-comments\,  
-      \database_id\: \your-database-id-here\  
-    }  
-  ]  
-} 
+{
+  "name": "bestjichang-blog",
+  "compatibility_date": "2024-04-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bestjichang-comments",
+      "database_id": "12d152d1-1b3a-4b04-b0e4-12881d7591a"
+    }
+  ]
+}
