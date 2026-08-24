@@ -1,0 +1,280 @@
+---
+import { marked } from 'marked';
+import { aiChatConfig } from '../config/ai-chat';
+const welcomeHtml = await marked.parse(aiChatConfig.welcomeMessage, { async: true });
+---
+
+<div id="ai-chat-widget" class="fixed bottom-6 lg:bottom-10 right-6 lg:right-10 z-50 font-sans">
+  <!-- Chat Window -->
+  <div id="chat-window" class="hidden flex-col w-80 sm:w-96 h-[550px] max-h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all duration-300 origin-bottom-right scale-95 opacity-0 mb-4">
+    
+    <!-- Header -->
+    <div class="bg-primary-600 px-4 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-2xl shadow-sm">
+            🤖
+          </div>
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
+        </div>
+        <div>
+          <div class="text-white font-bold text-sm">AI 知识库助手</div>
+          <p class="text-primary-100 text-xs flex items-center">
+            <svg class="w-3 h-3 mr-1 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            支持 Markdown 解析
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-1">
+        <button id="clear-chat" class="p-1.5 text-primary-100 hover:text-white hover:bg-primary-700 rounded-lg transition-colors focus:outline-none" title="清空对话">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </button>
+        <button id="close-chat" class="p-1.5 text-primary-100 hover:text-white hover:bg-primary-700 rounded-lg transition-colors focus:outline-none" title="关闭窗口">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="chat-messages" class="flex-1 h-0 p-4 overflow-y-auto space-y-4 bg-slate-50 dark:bg-slate-950/50 scroll-smooth">
+      <!-- Greeting Message & Suggestions -->
+      <div id="greeting-container" class="flex flex-col space-y-3">
+        <div class="flex items-end space-x-2">
+          <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 text-lg">🤖</div>
+          <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-2xl rounded-bl-sm shadow-sm max-w-[85%]">
+            <div class="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-a:text-primary-600 dark:prose-a:text-primary-400" set:html={welcomeHtml}></div>
+          </div>
+        </div>
+        
+        {aiChatConfig.suggestedQuestions.length > 0 && (
+          <div class="flex flex-wrap gap-2 pl-10">
+            {aiChatConfig.suggestedQuestions.map((q) => (
+              <button type="button" class="suggested-q-btn text-[13px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:border-primary-200 dark:hover:border-primary-800 hover:text-primary-600 dark:hover:text-primary-400 transition-colors shadow-sm text-left">
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Loading & Error Indicators (Hidden) -->
+    <div id="chat-loading" class="hidden px-4 pb-2 bg-slate-50 dark:bg-slate-950/50">
+      <div class="flex items-center space-x-2 text-slate-400">
+        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+        <span class="text-xs ml-1">AI 正在思考...</span>
+      </div>
+    </div>
+    <div id="chat-error" class="hidden px-4 pb-2 bg-slate-50 dark:bg-slate-950/50">
+      <div class="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg border border-red-100 dark:border-red-800 flex items-center">
+        <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>抱歉，AI 客服暂时无法回应，请稍后再试。</span>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+      <form id="chat-form" class="flex items-center space-x-2 relative">
+        <input 
+          type="text" 
+          id="chat-input"
+          placeholder="输入您的问题..." 
+          class="flex-1 bg-slate-100 dark:bg-slate-800 border-transparent focus:bg-white dark:focus:bg-slate-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-sm rounded-full pl-4 pr-12 py-2.5 text-slate-900 dark:text-white transition-all disabled:opacity-50"
+          autocomplete="off"
+        />
+        <button type="submit" id="chat-submit" class="absolute right-1 w-8 h-8 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Button -->
+  <button id="chat-toggle" class="w-14 h-14 bg-primary-600 hover:bg-primary-700 text-white rounded-full flex items-center justify-center shadow-2xl hover:shadow-primary-500/50 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+  </button>
+</div>
+
+<script type="module" is:inline>
+  import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/+esm';
+  import { marked } from 'https://cdn.jsdelivr.net/npm/marked@10.0.0/+esm';
+
+  const initChat = () => {
+    const toggleBtn = document.getElementById('chat-toggle');
+    const closeBtn = document.getElementById('close-chat');
+    const clearBtn = document.getElementById('clear-chat');
+    const chatWindow = document.getElementById('chat-window');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatSubmitBtn = document.getElementById('chat-submit');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatLoading = document.getElementById('chat-loading');
+    const chatError = document.getElementById('chat-error');
+
+    if (!toggleBtn) return; // Prevent double initialization errors
+
+    let isOpen = false;
+    let conversationId = '';
+
+    const toggleChat = () => {
+      isOpen = !isOpen;
+      if (isOpen) {
+        chatWindow?.classList.remove('hidden');
+        chatWindow?.classList.add('flex');
+        setTimeout(() => {
+          chatWindow?.classList.remove('scale-95', 'opacity-0');
+          chatWindow?.classList.add('scale-100', 'opacity-100');
+          chatInput?.focus();
+        }, 10);
+        if(toggleBtn) toggleBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+      } else {
+        chatWindow?.classList.remove('scale-100', 'opacity-100');
+        chatWindow?.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          chatWindow?.classList.add('hidden');
+          chatWindow?.classList.remove('flex');
+        }, 300);
+        if(toggleBtn) toggleBtn.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>';
+      }
+    };
+
+    toggleBtn?.addEventListener('click', toggleChat);
+    closeBtn?.addEventListener('click', toggleChat);
+
+    // Handle suggested questions clicks
+    const suggestedBtns = document.querySelectorAll('.suggested-q-btn');
+    suggestedBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (chatInput && chatForm && !chatSubmitBtn.disabled) {
+          chatInput.value = btn.textContent?.trim() || '';
+          chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      if (!chatMessages) return;
+      // Keep only the first greeting message
+      const greeting = chatMessages.firstElementChild;
+      chatMessages.innerHTML = '';
+      if (greeting) chatMessages.appendChild(greeting);
+      conversationId = ''; // Reset conversation for Dify
+      chatError?.classList.add('hidden');
+    });
+
+    const renderMarkdown = async (text) => {
+      const rawHtml = await marked.parse(text, { async: true });
+      return DOMPurify.sanitize(rawHtml);
+    };
+
+    const addMessage = async (text, isUser) => {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex ${isUser ? 'justify-end' : 'items-end space-x-2'}`;
+      
+      let innerHTML = '';
+      
+      if (isUser) {
+        innerHTML = `
+          <div class="bg-primary-600 text-white px-4 py-2.5 rounded-2xl rounded-br-sm shadow-sm max-w-[85%] break-words">
+            <p class="text-sm leading-relaxed">${text}</p>
+          </div>
+        `;
+      } else {
+        const htmlContent = await renderMarkdown(text);
+        innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 text-lg">🤖</div>
+          <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-2xl rounded-bl-sm shadow-sm max-w-[85%] break-words">
+            <div class="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-900 prose-pre:text-slate-800 dark:prose-pre:text-slate-200">${htmlContent}</div>
+          </div>
+        `;
+      }
+      
+      msgDiv.innerHTML = innerHTML;
+      chatMessages?.appendChild(msgDiv);
+      chatMessages?.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+    };
+
+    chatForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // Add user message to UI
+      addMessage(text, true);
+      
+      chatInput.value = '';
+      chatInput.disabled = true;
+      chatSubmitBtn.disabled = true;
+      chatError?.classList.add('hidden');
+      chatLoading?.classList.remove('hidden');
+      chatMessages?.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+
+      // 60-second timeout for Dify API
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      try {
+        const response = await fetch('/api/chat/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            query: text,
+            conversation_id: conversationId 
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error('API Error');
+        }
+        
+        if (data.reply) {
+          await addMessage(data.reply, false);
+          if (data.conversation_id) {
+            conversationId = data.conversation_id; // Save Dify conversation state
+          }
+        } else {
+          throw new Error('Invalid response format');
+        }
+
+      } catch (error) {
+        console.error('Chat error:', error);
+        chatError?.classList.remove('hidden');
+        
+        const errorTextSpan = chatError?.querySelector('span');
+        if (errorTextSpan) {
+          if (error.name === 'AbortError') {
+            errorTextSpan.textContent = 'AI 回复时间较长，请稍后再试。';
+          } else {
+            errorTextSpan.textContent = '抱歉，AI 客服暂时无法回应，请稍后再试。';
+          }
+        }
+
+        chatMessages?.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+      } finally {
+        chatLoading?.classList.add('hidden');
+        chatInput.disabled = false;
+        chatSubmitBtn.disabled = false;
+        chatInput.focus();
+      }
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChat);
+  } else {
+    initChat();
+  }
+</script>
+
+<style>
+  #chat-messages {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+</style>

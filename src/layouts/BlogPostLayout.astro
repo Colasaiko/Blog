@@ -1,0 +1,203 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FloatingAction from '../components/FloatingAction.astro';
+import ArticleFooter from '../components/ArticleFooter.astro';
+import { formatDate } from '../utils/formatDate';
+import '../styles/global.css';
+
+type Props = CollectionEntry<'blog'>['data'] & { 
+  readTime: string;
+  headings?: { depth: number; slug: string; text: string }[];
+};
+
+const { title, description, pubDate, updatedDate, author, category, readTime, headings, coverImage, keywords, video } = Astro.props;
+
+// Build Topic Cluster (Theme + Category + Tags + Keywords)
+const allPosts = await getCollection('blog');
+
+const currentKeywords = (keywords || '').split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+const currentTags = Astro.props.tags || [];
+
+const scoredPosts = allPosts
+  .filter(post => post.data.title !== title) // Exclude current post
+  .map(post => {
+    let score = 0;
+    
+    // 1. Category match (Base cluster)
+    if (post.data.category === category) score += 10;
+    
+    // 2. Tags match (Tight cluster)
+    const postTags = post.data.tags || [];
+    postTags.forEach(tag => {
+      if (currentTags.includes(tag)) score += 5;
+    });
+    
+    // 3. Keywords match (Granular relevance)
+    const postKeywords = (post.data.keywords || '').split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+    postKeywords.forEach(kw => {
+      if (currentKeywords.includes(kw)) score += 3;
+    });
+
+    // 4. Topic relevance via Title overlap
+    const titleWords = title.split(/[^\u4e00-\u9fa5a-zA-Z0-9]+/);
+    const postTitleWords = post.data.title.split(/[^\u4e00-\u9fa5a-zA-Z0-9]+/);
+    titleWords.forEach(word => {
+      if (word.length > 1 && postTitleWords.includes(word)) score += 2;
+    });
+
+    return { ...post, score };
+  })
+  .filter(post => post.score > 0) // Must have some relation
+  .sort((a, b) => b.score - a.score);
+
+// 2-5 Truly related articles (we take top 4)
+const relatedPosts = scoredPosts.slice(0, 4);
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const breadcrumbMap: Record<string, {name: string, url: string}> = {
+  '品牌介绍': { name: '网络工具推荐', url: '/brands/' },
+  '网络知识': { name: '新手教程', url: '/network/' },
+  '进阶网络概念': { name: '网络知识库', url: '/blog/' },
+  '客户端与 Clash': { name: '客户端与 Clash', url: '/clash/' },
+  '常用网络工具': { name: '常用网络工具', url: '/software/' },
+  'Web 开发': { name: '网络知识库', url: '/blog/' }
+};
+
+const parentCrumb = breadcrumbMap[category] || { name: '网络知识库', url: '/blog/' };
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": `${currentUrl}#article`,
+      "url": currentUrl,
+      "headline": title,
+      "description": description,
+      "image": coverImage ? new URL(coverImage, Astro.site).href : new URL("/placeholder-social.jpg", Astro.site).href,
+      "datePublished": pubDate.toISOString(),
+      "dateModified": updatedDate ? updatedDate.toISOString() : pubDate.toISOString(),
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": currentUrl
+      },
+      "articleSection": category,
+      "keywords": keywords || "",
+      "author": {
+        "@type": "Organization",
+        "name": "好机场编辑部",
+        "url": new URL("/about/", Astro.site).href
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "好机场",
+        "logo": {
+          "@type": "ImageObject",
+          "url": new URL("/favicon.svg", Astro.site).href
+        }
+      }
+    }
+  ]
+});
+---
+
+<html lang="zh-CN" class="antialiased scroll-smooth scroll-pt-28">
+  <head>
+    <BaseHead title={`${title} | 好机场`} description={description} image={coverImage} keywords={keywords} jsonLd={jsonLd} />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <Header />
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-12 flex flex-col lg:flex-row gap-8 xl:gap-16">
+      <!-- Article Content -->
+      <article class="flex-grow lg:w-3/4 max-w-4xl min-w-0">
+        <nav aria-label="Breadcrumb" class="mb-6 flex text-sm text-slate-500 dark:text-slate-400">
+          <ol class="flex flex-wrap items-center space-x-2">
+            <li>
+              <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">首页</a>
+            </li>
+            <li>
+              <span class="mx-1 text-slate-400">/</span>
+            </li>
+            <li>
+              <a href={parentCrumb.url} class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{parentCrumb.name}</a>
+            </li>
+            <li>
+              <span class="mx-1 text-slate-400">/</span>
+            </li>
+            <li class="text-slate-700 dark:text-slate-200 font-medium truncate" aria-current="page">
+              {title}
+            </li>
+          </ol>
+        </nav>
+        <header class="mb-10">
+          <div class="mb-4 text-primary-600 dark:text-primary-400 font-semibold tracking-wide uppercase text-sm">
+            {category}
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
+            {title}
+          </h1>
+          <div class="flex flex-wrap items-center space-x-4 text-sm text-slate-500 dark:text-slate-400">
+            <span>作者：{author}</span>
+            <span class="hidden sm:inline">&middot;</span>
+            <time datetime={pubDate.toISOString()}>
+              {formatDate(pubDate)}
+            </time>
+            <span class="hidden sm:inline">&middot;</span>
+            <span>{readTime}</span>
+          </div>
+          {
+            updatedDate && (
+              <div class="mt-3 text-xs text-slate-400 dark:text-slate-500 italic">
+                最后更新于 <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+              </div>
+            )
+          }
+        </header>
+
+        <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-a:text-primary-600 dark:prose-a:text-primary-400 hover:prose-a:text-primary-500">
+          <slot />
+        </div>
+        
+        <ArticleFooter title={title} category={category} keywords={keywords} />
+      </article>
+
+      {headings && headings.length > 0 && (
+        <aside class="hidden lg:block w-1/4 flex-shrink-0">
+          <div class="sticky top-28 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800/50">
+            <h3 class="text-sm font-bold tracking-wider text-slate-900 dark:text-white uppercase mb-4">目录</h3>
+            <ul class="space-y-2.5 text-sm">
+              {headings.map(heading => (
+                <li class={`pl-${(heading.depth - 1) * 4}`}>
+                  <a href={`#${heading.slug}`} class="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors block truncate">
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/60">
+              <a href="#" class="text-xs font-semibold text-slate-400 dark:text-slate-500 hover:text-primary-500 transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                回到顶部
+              </a>
+            </div>
+          </div>
+        </aside>
+      )}
+    </main>
+    <FloatingAction />
+    <Footer />
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        if (pathParts[0] === 'blog' && pathParts[1]) {
+          localStorage.setItem('lastReadArticle', pathParts[1]);
+        }
+      });
+    </script>
+  </body>
+</html>

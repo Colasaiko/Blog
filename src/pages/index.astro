@@ -1,0 +1,487 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://bestjichang.com/#website",
+      "url": "https://bestjichang.com/",
+      "name": "好机场",
+      "description": "专业的网络线路与工具使用指南"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://bestjichang.com/#organization",
+      "name": "好机场",
+      "url": "https://bestjichang.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://bestjichang.com/favicon.svg"
+      }
+    }
+  ]
+});
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const featuredPosts = posts.filter(p => p.data.featured && p.data.coverImage).slice(0, 4);
+
+const recommendedSlugs = [
+  'mac-client-comparison',
+  'copilot-connection-issues',
+  'perplexity-what-is',
+  'poe-upload-file',
+  'mac-clash-verge-rev',
+  'grok-prompt-guide'
+];
+const recommendedPosts = recommendedSlugs.map(slug => posts.find(p => p.slug === slug)).filter(Boolean);
+
+const rankings = [
+  { rank: 1, name: '微风', audience: '日常上网、流媒体爱好者', features: '全 IPLC 专线，不限制设备接入数量', platforms: 'Win / Mac / iOS / Android', slug: 'review-01-weifeng' },
+  { rank: 2, name: '飞猫', audience: '多设备重度用户', features: '最高 2.5Gbps 速率，原生 IP 解锁', platforms: '全平台及主流路由器', slug: 'review-02-feimao' },
+  { rank: 3, name: 'Sogo', audience: '进阶用户、企业级需求', features: 'VLESS 协议，企业级 IEPL 专线', platforms: 'Win / Mac / iOS / Android / OpenWrt', slug: 'review-03-sogo' },
+  { rank: 4, name: '幕光', audience: '追求极简的备用选择', features: 'BGP 多线智能调度，专线级出口架构', platforms: 'Win / Mac / iOS / Android', slug: 'review-04-muguang' },
+];
+
+const guidePosts = posts
+  .filter(p => p.slug.startsWith('guide-'))
+  .sort((a, b) => a.slug.localeCompare(b.slug))
+  .slice(0, 10);
+
+const faqs = [
+  { q: '什么是网络工具？', a: '网络工具是帮助用户改善网络连接环境、保护隐私或实现特定网络访问需求的应用或服务集合。' },
+  { q: '网络工具和代理有什么区别？', a: '代理通常指单一的协议转发，而现代网络工具往往集成了多种协议、路由规则以及更友好的客户端界面。' },
+  { q: '新手应该怎么选择？', a: '新手可以优先关注平台支持、线路类型、设备兼容性、套餐结构、服务条款和售后方式，再根据自己的实际需求选择。' },
+  { q: '手机和电脑可以使用吗？', a: '绝大多数优秀的网络工具都支持多平台，包括 Windows、macOS、iOS 和 Android，并提供对应的客户端。' }
+];
+
+const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置', '网络优化', '隐私保护探索'];
+---
+
+<BaseLayout title="2026年机场推荐与网络工具测速榜单：节点、价格及客户端全方位核验" description="本站为您提供2026年最新、最真实的机场与网络加速工具测速核验数据。通过对各大服务商节点状态、起步价格、主流客户端支持情况及流媒体解锁能力的深度实测，拒绝虚假营销，用真实抽样数据帮您选择最合适的国际网络加速方案，助您找到优质好用的VPN。" jsonLd={jsonLd} image="/og/og-home.jpg">
+
+  <!-- Subtle Background Pattern -->
+  <div class="absolute inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 opacity-80 h-[600px] pointer-events-none"></div>
+
+  <div class="space-y-8 sm:space-y-12 pb-10 pt-2">
+    <!-- Hero Section (Two Columns) -->
+    <section id="hero" class="max-w-7xl mx-auto px-4 pt-2 pb-2 sm:pt-4 sm:pb-4 scroll-mt-24">
+      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-6">
+        
+        <!-- Left: Text Content -->
+        <div class="flex-1 text-center lg:text-left z-10">
+          <h1 class="reveal-el text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
+            全球网络优化引擎：<br class="sm:hidden" />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">为您精选 2026 高能节点与加速服务</span>
+          </h1>
+          <p class="reveal-el reveal-delay-100 max-w-2xl mx-auto lg:mx-0 text-lg sm:text-xl text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+            从晚高峰 4K 丝滑秒开，到原生环境无缝畅联 ChatGPT，为您深度解析 2026 前沿的网络优化与专线趋势。
+          </p>
+          <div class="reveal-el reveal-delay-200 flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
+            <a href="/brands/" class="group relative inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary-600 text-white font-semibold text-base transition-all duration-200 ease-out hover:bg-primary-700 hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-950 motion-reduce:transition-none motion-reduce:hover:transform-none">
+              查看推荐排行榜
+              <span class="ml-2 transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none">&rarr;</span>
+            </a>
+            <a href="/network/" class="group relative inline-flex items-center justify-center px-6 py-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-base transition-all duration-200 ease-out hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-500 dark:hover:text-primary-400 hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-950 motion-reduce:transition-none motion-reduce:hover:transform-none">
+              新手教程
+            </a>
+            <a href="/blog/" class="group relative inline-flex items-center justify-center px-6 py-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-base transition-all duration-200 ease-out hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-500 dark:hover:text-primary-400 hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-950 motion-reduce:transition-none motion-reduce:hover:transform-none">
+              网络知识
+            </a>            
+            
+            
+
+          </div>
+        </div>
+
+        <!-- Right: Video -->
+        <div class="flex-1 w-full max-w-md lg:max-w-lg reveal-el reveal-delay-300">
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 bg-slate-900 aspect-video group">
+            <video
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            >
+              <source src="/video/network-world.webm" type="video/webm">
+              <source src="/video/network-world.mp4" type="video/mp4">
+            </video>
+            <!-- AI Tag -->
+            <a href="/ai/#ai-video" class="absolute bottom-4 right-4 bg-black/50 hover:bg-primary-600/90 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 flex items-center space-x-2 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary-500/30 group">
+              <svg class="w-4 h-4 text-purple-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              <span class="text-xs sm:text-sm font-semibold text-white/90 group-hover:text-white tracking-wide transition-colors">学习如何用 AI 制作同款影片 &rarr;</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SEO 热门探索与推荐指南（用于抓取与长尾词） -->
+    <section id="explore" class="reveal-el max-w-5xl mx-auto px-4 mb-20 scroll-mt-24">
+      <div class="border-t border-slate-100 dark:border-slate-800/60 pt-6">
+        <div class="text-center mb-6">
+          <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">2026 全球网络优化六大场景</h2>
+          <p class="text-sm text-slate-500 mt-2">从晚高峰 4K 丝滑秒开，到原生环境无缝畅联 ChatGPT</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { tag: "🏆 2026 年度高口碑精选", desc: "多维度深度实测，为您筛选兼具极致性价比与高可用性的长青级网络服务提供商。" },
+            { tag: "📺 流媒体 4K 极速解锁", desc: "严选原生高质量住宅 IP，无痛解锁跨区限制，晚高峰 4K 高清画质丝滑不卡顿。" },
+            { tag: "🤖 AI 工具专属纯净网络", desc: "精选纯净原生网络环境，彻底告别频繁掉线与 Access Denied，让 AI 生产力随时拉满。" },
+            { tag: "📱 跨国社交与短视频优化", desc: "专为图文加载与高清视频流优化，海外 TikTok 畅快刷，全球社交平台毫秒级同步。" },
+            { tag: "⚡ IPLC/IEPL 旗舰级专线", desc: "国际物理专线超低延迟直连，免疫晚高峰波动，满足外贸出海、跨国办公与硬核玩家的极致需求。" },
+            { tag: "💻 全平台客户端适配指南", desc: "全面覆盖 Windows / Mac / iOS / Android 平台，提供保姆级图文配置指南，一键无缝接入。" }
+          ].map(item => (
+            <div class="bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 p-4 rounded-xl hover:shadow-sm transition-shadow">
+              <div class="text-sm font-bold text-primary-600 dark:text-primary-400 mb-1">{item.tag}</div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- 新手入门 -->
+    <section id="guides" class="scroll-mt-24 max-w-5xl mx-auto px-4 scroll-mt-24">
+      <div class="text-center mb-12">
+        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">新手入门</h2>
+        <div class="reveal-el reveal-delay-100 w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {guidePosts.map((post, index) => (
+          <a href={`/blog/${post?.slug}/`} class={`reveal-el group relative flex flex-col p-4 sm:p-5 bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 rounded-2xl transition-all duration-300 ease-out hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-primary-300 dark:hover:border-primary-700 hover:-translate-y-[4px] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none aspect-square text-left overflow-hidden`} style={`transition-delay: ${index * 40}ms`}>
+            
+            <!-- Top Left: Number Watermark -->
+            <div class="absolute top-4 left-4 font-mono text-2xl font-black text-slate-300 dark:text-slate-600/80 group-hover:text-primary-200 dark:group-hover:text-primary-800/50 transition-colors duration-300">
+              {String(index + 1).padStart(2, '0')}
+            </div>
+            
+            <!-- Middle: Title and Content -->
+            <div class="relative z-10 mt-8 flex-grow flex flex-col justify-center">
+              <div class="font-bold text-[14px] sm:text-[15px] text-slate-800 dark:text-slate-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2 mb-2 leading-snug">
+                {post?.data?.title}
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                {post?.data?.description}
+              </p>
+            </div>
+            
+            <!-- Bottom: Date & Read More -->
+            <div class="relative z-10 flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-slate-800/60 w-full">
+              <span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 tracking-wider">
+                {(post.data.updatedDate || post.data.pubDate).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+              </span>
+              <span class="text-[10px] font-bold text-primary-500 flex items-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                深入阅读 <span class="ml-1 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="reveal-el text-center mt-8">
+        <a href="/network/" class="inline-flex items-center justify-center font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors focus-visible:outline-none focus-visible:underline group">
+          查看全部新手教程 
+          <span class="ml-2 transition-transform duration-200 ease-out group-hover:translate-x-1">&rarr;</span>
+        </a>
+      </div>
+    </section>
+    
+    <!-- 推荐排行榜 -->
+    <section id="rankings" class="max-w-4xl mx-auto px-4 scroll-mt-24">
+      <div class="text-center mb-12">
+        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">网络工具推荐排行榜</h2>
+        <div class="reveal-el reveal-delay-100 w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10 mb-10">
+          {rankings.map((brand, index) => (
+            <div class={`reveal-el group flex flex-col p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300`} style={`transition-delay: ${index * 80}ms`}>
+              <div class="text-4xl font-black text-slate-300 dark:text-slate-600 mb-2 font-mono transition-colors group-hover:text-primary-200 dark:group-hover:text-primary-800/60">
+                {String(brand.rank).padStart(2, '0')}
+              </div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white mb-5">{brand.name}</div>
+              
+              <div class="space-y-4 flex-grow text-sm">
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">适合人群</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200">{brand.audience}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">服务特点</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200 leading-snug block">{brand.features}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">平台支持</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200 leading-snug block">{brand.platforms}</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/60">
+                <a href={`/blog/${brand.slug}/`} class="inline-flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                  查看品牌介绍
+                  <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="reveal-el text-center">
+        <a href="/brands/" class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 ease-out hover:-translate-y-[1px] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none motion-reduce:hover:transform-none">
+          查看完整排行榜
+        </a>
+      </div>
+    </section>
+
+
+    <!-- Featured Articles (Media Cards) -->
+    {featuredPosts.length > 0 && (
+      <section id="featured-posts" class="scroll-mt-24 max-w-5xl mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">编辑精选</h2>
+          <div class="reveal-el reveal-delay-100 w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 relative z-10 mb-10">
+          {featuredPosts.map((post, index) => (
+            <a href={`/blog/${post?.slug}/`} class={`reveal-el group flex flex-col bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden`} style={`transition-delay: ${index * 80}ms`}>
+              <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                <img src={post.data.coverImage} alt={post?.data?.title} width="1600" height="900" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                {post.data.video && (
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors pointer-events-none">
+                    <div class="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
+                      <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                )}
+                <div class="absolute top-4 left-4">
+                  <span class="px-3 py-1 bg-slate-900/80 backdrop-blur text-white text-xs font-bold rounded-full">{post?.data?.category}</span>
+                </div>
+              </div>
+              <div class="p-6 flex flex-col flex-grow">
+                <div class="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2">{post?.data?.title}</div>
+                <p class="text-slate-600 dark:text-slate-400 line-clamp-2 text-sm leading-relaxed mb-4">{post?.data?.description}</p>
+                <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60 text-xs font-bold text-slate-400 group-hover:text-primary-500 flex justify-between items-center transition-colors">
+                  <span>{post.data.updatedDate ? '最后更新 ' + post.data.updatedDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) : post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span class="flex items-center">阅读全文 <span class="ml-1 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span></span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 推荐文章 (Modern Rows) -->
+    <section id="recommended-posts" class="scroll-mt-24 max-w-4xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">为你推荐：热门解答</h2>
+        <div class="reveal-el reveal-delay-100 w-16 h-1 bg-slate-200 dark:bg-slate-700 mx-auto rounded-full"></div>
+      </div>
+      <div class="divide-y divide-slate-100 dark:divide-slate-800/60 border-y border-slate-100 dark:border-slate-800/60">
+        {recommendedPosts.map((post, index) => (
+          <a href={`/blog/${post?.slug}/`} class={`reveal-el group block py-6 sm:py-8 px-4 -mx-4 sm:mx-0 sm:px-6 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-2xl sm:rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none`} style={`transition-delay: ${index * 60}ms`}>
+            <div class="flex flex-col sm:flex-row sm:items-baseline gap-2 mb-2 sm:mb-3">
+              <span class="inline-block text-xs font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                {post?.data?.category}
+              </span>
+            </div>
+            <div class="flex items-start justify-between">
+              <div class="pr-8">
+                <div class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3 transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                  {post?.data?.title}
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                  {post?.data?.description}
+                </p>
+              </div>
+              <span class="mt-2 text-slate-300 dark:text-slate-600 group-hover:text-primary-500 transition-all duration-200 ease-out group-hover:translate-x-1 flex-shrink-0 motion-reduce:transition-none motion-reduce:hover:transform-none">
+                &rarr;
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="reveal-el text-center mt-8">
+        <a href="/blog/" class="inline-flex items-center justify-center font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors focus-visible:outline-none focus-visible:underline group">
+          浏览知识库全部文章 
+          <span class="ml-2 transition-transform duration-200 ease-out group-hover:translate-x-1">&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2026 热门网络工具与探索指南 -->
+    <section class="max-w-4xl mx-auto text-center px-4">
+      <h2 class="reveal-el text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-8">2026 热门网络工具与探索指南</h2>
+      <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
+        {networkTags.map((tag, index) => (
+          <a href="/network/" class={`reveal-el inline-block px-5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-medium text-slate-700 dark:text-slate-300 transition-all duration-200 ease-out hover:border-primary-400 hover:text-primary-700 hover:shadow-sm dark:hover:border-primary-600 dark:hover:text-primary-300 hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none motion-reduce:hover:transform-none`} style={`transition-delay: ${index * 40}ms`}>
+            {tag}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 为什么选择我们 -->
+    <section class="max-w-4xl mx-auto text-center px-4">
+      <div class="p-8 sm:p-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border border-slate-200 dark:border-slate-800/60">
+        <h2 class="reveal-el text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">为什么选择我们？</h2>
+        <p class="reveal-el reveal-delay-100 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+          我们致力于整理网络工具、线路、客户端和前沿探索指南，尽量基于公开资料与可核实信息进行介绍，并持续更新内容。
+        </p>
+        <div class="reveal-el reveal-delay-200">
+          <a href="/about/" class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 ease-out hover:-translate-y-[1px] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none motion-reduce:hover:transform-none">
+            了解更多
+          </a>
+        </div>
+      </div>
+    </section>
+
+<!-- FAQ -->
+    <section id="faq" class="scroll-mt-24 max-w-3xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">常见问题 (FAQ)</h2>
+        <div class="reveal-el reveal-delay-100 w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
+      </div>
+      <div class="space-y-4">
+        {faqs.map((faq, index) => (
+          <details class={`reveal-el faq-details group bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden transition-all duration-300 ease-out`} style={`transition-delay: ${index * 80}ms`}>
+            <summary class="flex justify-between items-center font-semibold cursor-pointer list-none p-5 sm:p-6 text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 [&::-webkit-details-marker]:hidden">
+              {faq.q}
+              <span class="relative flex-shrink-0 ml-4 w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors">
+                <!-- Plus icon -->
+                <svg class="absolute inset-0 w-5 h-5 transition-transform duration-300 ease-out group-open:rotate-180 group-open:opacity-0 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                <!-- Minus icon -->
+                <svg class="absolute inset-0 w-5 h-5 transition-transform duration-300 ease-out -rotate-180 opacity-0 group-open:rotate-0 group-open:opacity-100 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
+              </span>
+            </summary>
+            <!-- Content wrapper for smooth height animation via JS if needed, or simple padding expansion -->
+            <div class="faq-content overflow-hidden px-5 sm:px-6 pb-6 text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-0 transition-all duration-300 ease-out border-t border-transparent group-open:border-slate-100 dark:group-open:border-slate-800">
+              <p class="pt-2">{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 首页右侧页面导航 (Floating TOC) -->
+  <nav class="hidden xl:block fixed right-8 top-1/3 w-48 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm z-40">
+    <div class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
+      浏览网页
+    </div>
+    <ul class="space-y-3 text-sm">
+      <li>
+        <a href="#hero" class="block text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">回到顶部</a>
+      </li>
+
+      <li>
+        <a href="#guides" class="block text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">新手入门</a>
+      </li>
+      <li>
+        <a href="#rankings" class="block text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">推荐排行榜</a>
+      </li>
+      <li>
+        <a href="#recommended-posts" class="block text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">为您推荐</a>
+      </li>
+      <li>
+        <a href="#faq" class="block text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">常见问题 (FAQ)</a>
+      </li>
+    </ul>
+  </nav>
+
+</BaseLayout>
+
+<style>
+  /* Reveal Animation Styles */
+  .reveal-el {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-el {
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+
+  .reveal-el.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-100 { transition-delay: 100ms; }
+  .reveal-delay-200 { transition-delay: 200ms; }
+  .reveal-delay-300 { transition-delay: 300ms; }
+  
+  /* FAQ Smooth Expand */
+  .faq-details::details-content {
+    transition: height 300ms ease-out, opacity 300ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video {
+      display: none;
+    }
+    .hero-video-container {
+      background-image: url('/video/network_hero_poster.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveal
+  const setupReveal = () => {
+    // Only run if user hasn't requested reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      document.querySelectorAll('.reveal-el').forEach(el => el.classList.add('is-revealed'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target); // Reveal only once
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px 0px -50px 0px',
+      threshold: 0.1
+    });
+
+    document.querySelectorAll('.reveal-el').forEach((el) => observer.observe(el));
+  };
+
+  // Run on initial load
+  setupReveal();
+  
+  // Custom logic for smooth details accordion
+  const details = document.querySelectorAll('.faq-details');
+  details.forEach(targetDetail => {
+    targetDetail.addEventListener('click', (e) => {
+      // Allow only one detail to be open at a time (Optional)
+      /* 
+      details.forEach(detail => {
+        if (detail !== targetDetail && detail.hasAttribute('open')) {
+          detail.removeAttribute('open');
+        }
+      });
+      */
+    });
+  });
+</script>

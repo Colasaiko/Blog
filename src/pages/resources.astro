@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "相关资源 | 好机场",
+      "description": "编辑精选的外部参考资料与中文延伸阅读，包含各大协议官方技术文档及优质中文社区。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "相关资源",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="相关资源 | 好机场" description="编辑精选的外部参考资料与中文延伸阅读，包含各大协议官方技术文档及优质中文社区。" jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto py-12 px-4 sm:px-6">
+    
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">相关资源</h1>
+      <div class="w-16 h-1 bg-primary-500 mx-auto rounded-full mb-6"></div>
+      <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">编辑精选的外部参考资料与中文延伸阅读</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6">
+      
+      <!-- 第一类：官方资料 -->
+      <div class="block p-8 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-xl transition-all duration-300 ease-out">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">官方资料</h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed border-b border-slate-100 dark:border-slate-800 pb-4">
+          技术协议、开源项目及互联网服务提供商的官方一手参考资源
+        </p>
+        <div class="flex flex-col space-y-3">
+          <a href="https://www.wireguard.com/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            WireGuard 官方
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://sing-box.sagernet.org/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            sing-box 官方指南
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://github.com/MetaCubeX" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            MetaCubeX (Clash Meta)
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://www.ietf.org/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            IETF 互联网工程任务组
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://www.cloudflare.com/learning/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            Cloudflare 学习中心
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://www.icann.org/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            ICANN
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://www.apnic.net/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            APNIC
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://platform.openai.com/docs/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            OpenAI 官方文档
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://developer.apple.com/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            Apple 开发者文档
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://github.com/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            GitHub 开源社区
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 第二类：中文技术与社区资料 -->
+      <div class="block p-8 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-xl transition-all duration-300 ease-out">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">中文技术与社区资料</h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed border-b border-slate-100 dark:border-slate-800 pb-4">
+          中文领域的优质延伸阅读与相关社区参考
+        </p>
+        <div class="flex flex-col space-y-3">
+          <a href="https://jichangblog.net/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            机场博客 (jichang.blog)
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://clash.wiki/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            Clash Wiki
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://gate-rank.com/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            GateRank
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+          <a href="https://clashjiedian.org/" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center group">
+            Clash节点查
+            <span class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>

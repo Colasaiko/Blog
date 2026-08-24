@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "404: 页面未找到",
+      "description": "页面未找到"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "404: 页面未找到",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+---
+
+<BaseLayout title="404: 页面未找到" description="页面未找到" jsonLd={jsonLd} noindex={true}>
+  <div class="flex flex-col items-center justify-center py-20 text-center">
+    <h1 class="text-9xl font-extrabold text-slate-200 dark:text-slate-800 tracking-widest">404</h1>
+    <div class="bg-primary-500 text-white px-2 text-sm rounded rotate-12 absolute">
+      页面未找到
+    </div>
+    <div class="mt-8">
+      <p class="text-xl text-slate-600 dark:text-slate-400 mb-8">
+        抱歉，我们找不到您要访问的页面。
+      </p>
+      <a href="/" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-semibold transition-colors">
+        返回首页
+      </a>
+    </div>
+  </div>
+</BaseLayout>

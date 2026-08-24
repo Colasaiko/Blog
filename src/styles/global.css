@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-text: #334155; /* slate-700 */
+    --color-bg: #ffffff;
+    --color-border: #e2e8f0; /* slate-200 */
+  }
+
+  .dark {
+    --color-text: #cbd5e1; /* slate-300 */
+    --color-bg: #020617; /* slate-950 */
+    --color-border: #1e293b; /* slate-800 */
+  }
+
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text)] antialiased transition-colors duration-200 ease-in-out;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom Markdown Styles */
+@layer components {
+  .prose {
+    @apply max-w-[70ch] mx-auto text-base leading-relaxed;
+  }
+  
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply text-slate-900 dark:text-slate-100 font-bold tracking-tight mt-10 mb-4;
+  }
+  
+  .prose h1 { @apply text-3xl sm:text-4xl; }
+  .prose h2 { @apply text-2xl sm:text-3xl border-b border-[var(--color-border)] pb-2; }
+  .prose h3 { @apply text-xl sm:text-2xl; }
+  .prose h4 { @apply text-lg sm:text-xl; }
+  
+  .prose p { @apply my-5 leading-7; }
+  
+  .prose a {
+    @apply text-primary-600 dark:text-primary-400 underline decoration-primary-300 dark:decoration-primary-700 underline-offset-4 hover:decoration-primary-600 dark:hover:decoration-primary-400 transition-colors;
+  }
+
+  .prose ul { @apply list-disc list-outside pl-6 my-5 space-y-2; }
+  .prose ol { @apply list-decimal list-outside pl-6 my-5 space-y-2; }
+  
+  .prose blockquote {
+    @apply border-l-4 border-primary-500 pl-4 py-1 my-6 italic text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 rounded-r-lg;
+  }
+  
+  .prose img { @apply rounded-xl shadow-md my-8 mx-auto max-w-full transition-transform duration-300 ease-out hover:scale-[1.02] overflow-hidden; }
+  
+  .prose pre {
+    @apply p-4 rounded-xl shadow-sm my-6 overflow-x-auto text-sm bg-[#0d1117] dark:bg-[#0d1117] border border-[var(--color-border)];
+  }
+  
+  .prose code {
+    @apply font-mono text-sm px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-primary-600 dark:text-primary-400;
+  }
+  
+  .prose pre code {
+    @apply bg-transparent text-inherit p-0;
+  }
+  
+  .prose table { @apply w-full my-6 text-left border-collapse block overflow-x-auto; }
+  .prose th { @apply border-b-2 border-[var(--color-border)] py-3 font-semibold text-slate-900 dark:text-slate-100; }
+  .prose td { @apply border-b border-[var(--color-border)] py-3; }
+
+  /* Shiki CSS variables theme support */
+  .prose pre {
+    --shiki-color-text: #c9d1d9;
+    --shiki-color-background: #0d1117;
+    --shiki-token-constant: #79c0ff;
+    --shiki-token-string: #a5d6ff;
+    --shiki-token-comment: #8b949e;
+    --shiki-token-keyword: #ff7b72;
+    --shiki-token-parameter: #c9d1d9;
+    --shiki-token-function: #d2a8ff;
+    --shiki-token-string-expression: #a5d6ff;
+    --shiki-token-punctuation: #c9d1d9;
+    --shiki-token-link: #a5d6ff;
+  }
+}
+
+
+/* Custom Scrollbar for TOC */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #64748b; border-radius: 9999px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #334155; }
+.custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: #94a3b8; }
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: #475569; }

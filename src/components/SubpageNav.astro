@@ -1,0 +1,63 @@
+---
+// src/components/SubpageNav.astro
+export interface Props {
+  exclude: 'brands' | 'network' | 'blog' | 'ai';
+}
+
+const { exclude } = Astro.props;
+
+const menus = [
+  { name: '推荐机场', url: '/brands/', slug: 'brands', 
+    articles: [
+      { title: '2026 稳定机场推荐', desc: '精选全网高性价比、晚高峰稳定的优质国际网络节点与加速订阅服务。', url: '/brands/' },
+      { title: '如何选择合适的节点？', desc: '一文带你了解如何根据自身需求，挑选最适合的线路。', url: '/network/' }
+    ]
+  },
+  { name: '新手教程', url: '/network/', slug: 'network',
+    articles: [
+      { title: 'Clash 从零开始配置教程', desc: '保姆级图文教学，手把手教你配置各大平台客户端。', url: '/blog/guide-01/' },
+      { title: '代理网络基础概念科普', desc: '什么是代理？了解常见的代理加速原理与基础词汇。', url: '/blog/guide-03/' }
+    ]
+  },
+  { name: '网络知识', url: '/blog/', slug: 'blog',
+    articles: [
+      { title: '什么是 IPLC/IEPL 专线？', desc: '深度解析跨境专线的原理及与普通公网的区别。', url: '/blog/adv-02/' },
+      { title: '流媒体解锁原理解析', desc: '为什么能看 Netflix 4K？带你了解原生 IP 与 DNS 解锁机制。', url: '/blog/adv-01/' }
+    ]
+  },
+  { name: 'AI 教程', url: '/ai/', slug: 'ai',
+    articles: [
+      { title: 'ChatGPT 注册与防封指南', desc: '纯净原生网络环境搭建，彻底解决封号烦恼。', url: '/ai/#chatgpt-basics' },
+      { title: 'Claude 进阶使用技巧', desc: '掌握高效 Prompt 编写，让大模型为你输出最优质的回答。', url: '/ai/#claude-advanced' }
+    ]
+  }
+].filter(m => m.slug !== exclude);
+---
+
+<div class="mt-8 mb-12 w-full">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {menus.map(menu => (
+      <div class="flex flex-col gap-4">
+        <!-- Main Button -->
+        <a href={menu.url} class="group relative inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-bold text-base transition-all duration-300 hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-primary-900/30 dark:hover:text-primary-400 shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700">
+          {menu.name}
+          <span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">&rarr;</span>
+        </a>
+        
+        <!-- Article Text Frames -->
+        <div class="grid grid-cols-2 gap-3">
+          {menu.articles.map(article => (
+            <a href={article.url} class="group flex flex-col p-4 bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-700/50 rounded-xl hover:border-primary-400 dark:hover:border-primary-500 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:shadow-sm">
+              <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 line-clamp-2 leading-snug mb-1.5 transition-colors">
+                {article.title}
+              </h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
+                {article.desc}
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

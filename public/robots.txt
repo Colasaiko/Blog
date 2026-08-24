@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Exclude API endpoints if necessary
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://bestjichang.com/sitemap-index.xml

@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ContactPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "联系我们 | 好机场",
+      "description": "联系好机场团队。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "联系我们",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="联系我们 | 好机场" description="联系好机场团队。" jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto prose dark:prose-invert py-12">
+    <h1>联系我们</h1>
+    <p>如果您有任何问题、建议或商业合作意向，可以通过以下方式联系我们：</p>
+    <ul>
+      <li>Email: contact@bestjichang.com</li>
+      <li>Twitter: @bestjichang</li>
+    </ul>
+    <p>我们会在收到消息后的 24-48 小时内尽快回复您。</p>
+  </div>
+</BaseLayout>

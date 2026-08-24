@@ -1,0 +1,319 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "讨论区 | 好机场",
+      "description": "好机场用户交流与讨论区"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "讨论区",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="讨论区 | 好机场" description="好机场用户交流与讨论区" jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6">
+    <div class="mb-10 text-center">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">讨论区</h1>
+      <p class="text-slate-500 dark:text-slate-400">在这里留下你的想法或疑问，系统会为你分配随机匿名昵称。</p>
+    </div>
+
+    <!-- Input Form -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 mb-10 shadow-sm transition-all" id="form-container">
+      <div id="reply-indicator" class="hidden mb-3 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700">
+        <span class="text-sm text-slate-600 dark:text-slate-300">
+          回复 <span id="reply-to-name" class="font-bold text-primary-600 dark:text-primary-400"></span>...
+        </span>
+        <button type="button" id="cancel-reply-btn" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">取消回复</button>
+      </div>
+
+      <form id="comment-form" class="space-y-4">
+        <div>
+          <label for="comment-text" class="sr-only">评论内容</label>
+          <textarea id="comment-text" rows="3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all resize-none" placeholder="写下你的评论..."></textarea>
+        </div>
+        
+        <div class="flex items-center justify-end w-full space-x-3 mt-2 relative">
+          <div class="relative">
+            <button type="button" id="emoji-btn" class="p-2 text-slate-400 hover:text-primary-600 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none" title="插入表情">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </button>
+            <div id="emoji-picker" class="hidden absolute bottom-full right-0 mb-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-3 z-50">
+              <div class="grid grid-cols-6 gap-2 text-xl" id="emoji-grid">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-900 shadow-sm">
+            发布
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Comments List -->
+    <div id="comments-container" class="space-y-6">
+      <div class="text-center text-slate-500 py-10" id="loading-indicator">加载中...</div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    const emojiBtn = document.getElementById('emoji-btn');
+    const emojiPicker = document.getElementById('emoji-picker');
+    const emojiGrid = document.getElementById('emoji-grid');
+    
+    const emojis = ['😀', '😂', '🤣', '😊', '😍', '😘', '😭', '😡', '😱', '👍', '👎', '🙏', '👀', '🔥', '🎉', '💯', '🚀', '🤔', '😅', '🤐', '😎', '🍉', '🍺', '🎮'];
+    
+    emojiGrid.innerHTML = emojis.map(e => `<button type="button" class="hover:bg-slate-100 dark:hover:bg-slate-800 rounded p-1 transition-colors emoji-item">${e}</button>`).join('');
+    
+    emojiBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      emojiPicker.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+        emojiPicker.classList.add('hidden');
+      }
+    });
+
+    emojiGrid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('emoji-item')) {
+        const emoji = e.target.textContent;
+        // Insert emoji at cursor position
+        const startPos = input.selectionStart;
+        const endPos = input.selectionEnd;
+        input.value = input.value.substring(0, startPos) + emoji + input.value.substring(endPos, input.value.length);
+        input.focus();
+        input.selectionStart = startPos + emoji.length;
+        input.selectionEnd = startPos + emoji.length;
+      }
+    });
+
+    const form = document.getElementById('comment-form');
+    const input = document.getElementById('comment-text');
+    const container = document.getElementById('comments-container');
+    const replyIndicator = document.getElementById('reply-indicator');
+    const replyToNameEl = document.getElementById('reply-to-name');
+    const cancelReplyBtn = document.getElementById('cancel-reply-btn');
+    const formContainer = document.getElementById('form-container');
+
+    let currentReplyState = null; // { parentId, replyToUser }
+
+    const escapeHtml = (unsafe) => {
+      if(!unsafe) return '';
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const formatDate = (isoString) => {
+      const d = new Date(isoString);
+      const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute:'2-digit' });
+      return `${d.getMonth() + 1}月${d.getDate()}日 ${timeStr}`;
+    };
+
+    const getAvatarInitials = (name) => {
+      if(!name) return 'U';
+      return name.substring(name.length - 2).toUpperCase();
+    };
+
+    window.setReply = (parentId, replyToUser) => {
+      currentReplyState = { parentId, replyToUser };
+      replyToNameEl.textContent = '@' + replyToUser;
+      replyIndicator.classList.remove('hidden');
+      input.focus();
+      
+      // Scroll to top a bit to see the form
+      const y = formContainer.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    };
+
+    cancelReplyBtn.addEventListener('click', () => {
+      currentReplyState = null;
+      replyIndicator.classList.add('hidden');
+    });
+
+    const loadComments = async () => {
+      try {
+        const res = await fetch('/api/comments/');
+        const comments = await res.json();
+        renderComments(comments);
+      } catch (err) {
+        container.innerHTML = '<div class="text-center text-red-500 py-10">加载失败，请刷新重试</div>';
+      }
+    };
+
+    const renderActionButtons = (id, parentId, username, likes) => `
+      <div class="flex items-center space-x-4 mt-2">
+        <button type="button" class="flex items-center text-xs text-slate-500 hover:text-primary-600 transition-colors">
+          <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+          赞 ${likes || ''}
+        </button>
+        <button type="button" onclick="setReply('${parentId || id}', '${escapeHtml(username)}')" class="flex items-center text-xs text-slate-500 hover:text-primary-600 transition-colors">
+          回复
+        </button>
+        <button type="button" onclick="deleteComment('${id}', '${parentId || ''}')" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+          更多
+        </button>
+      </div>
+    `;
+
+    const renderReplies = (replies, parentId) => {
+      if (!replies || replies.length === 0) return '';
+      
+      const repliesHtml = replies.map(r => `
+        <div class="group relative pt-4">
+          <div class="flex">
+            <!-- Reply Avatar (Smaller, 32px) -->
+            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center mr-3 text-[10px] font-bold flex-shrink-0 mt-0.5">
+              ${getAvatarInitials(r.username)}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline space-x-2 mb-1">
+                <span class="font-bold text-sm text-slate-800 dark:text-slate-200">${escapeHtml(r.username)}</span>
+                ${r.replyToUser ? `<span class="text-xs text-slate-400">回复 <span class="text-slate-500 dark:text-slate-400">@${escapeHtml(r.replyToUser)}</span></span>` : ''}
+                <span class="text-xs text-slate-400 pl-1">${formatDate(r.createdAt)}</span>
+              </div>
+              <div class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(r.text)}</div>
+              ${renderActionButtons(r.id, parentId, r.username, r.likes)}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <!-- Nested replies container with left border indent -->
+        <div class="mt-4 ml-2 sm:ml-5 pl-4 sm:pl-6 border-l-2 border-slate-100 dark:border-slate-800 space-y-2">
+          ${repliesHtml}
+        </div>
+      `;
+    };
+
+    const renderComments = (comments) => {
+      if (comments.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-500 py-10">暂无评论，快来抢沙发吧！</div>';
+        return;
+      }
+
+      container.innerHTML = comments.map(c => `
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 rounded-2xl p-4 sm:p-6 shadow-sm group">
+          <!-- Top Level Comment -->
+          <div class="flex">
+            <!-- Top Level Avatar (Larger, 40px) -->
+            <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 flex items-center justify-center mr-3 sm:mr-4 text-xs font-bold flex-shrink-0">
+              ${getAvatarInitials(c.username)}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-baseline space-x-3">
+                  <span class="font-bold text-slate-800 dark:text-slate-200">${escapeHtml(c.username)}</span>
+                  <span class="text-xs text-slate-400">${formatDate(c.createdAt)}</span>
+                </div>
+              </div>
+              <div class="text-base text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap break-words mt-1">${escapeHtml(c.text)}</div>
+              ${renderActionButtons(c.id, null, c.username, c.likes)}
+            </div>
+          </div>
+
+          <!-- Replies Section -->
+          ${renderReplies(c.replies, c.id)}
+        </div>
+      `).join('');
+    };
+
+    window.deleteComment = async (id, parentId) => {
+      const pass = prompt('请输入操作密码：');
+      if (!pass) return;
+
+      try {
+        const res = await fetch('/api/comments/', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, parentId: parentId || null, password: pass })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          loadComments();
+        } else {
+          alert(data.error || '操作失败');
+        }
+      } catch(err) {
+        alert('网络错误');
+      }
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      const submitBtn = form.querySelector('button');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = '发布中...';
+
+      const payload = { text };
+      if (currentReplyState) {
+        payload.parentId = currentReplyState.parentId;
+        payload.replyToUser = currentReplyState.replyToUser;
+      }
+
+      try {
+        const res = await fetch('/api/comments/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (res.ok) {
+          input.value = '';
+          currentReplyState = null;
+          replyIndicator.classList.add('hidden');
+          loadComments();
+        } else {
+          const data = await res.json();
+          alert(data.error || '发布失败');
+        }
+      } catch(err) {
+        alert('网络错误');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    loadComments();
+  });
+</script>

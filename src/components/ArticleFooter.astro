@@ -1,0 +1,141 @@
+---
+const { category, title, keywords } = Astro.props;
+
+let faq = [];
+let mistakes = [];
+
+// 1. Maintain Category-based FAQ and Mistakes
+if (category === '品牌介绍') {
+  faq = [
+    { q: "这些网络服务商（机场）支持退款吗？", a: "大多数主流服务商支持 24-72 小时内的按比例退款，但必须仔细阅读其服务条款（TOS），部分特价套餐可能不支持。" },
+    { q: "为什么测速很高，但实际看视频还是卡？", a: "测速节点的瞬时带宽不代表长时间的流媒体连通性。部分测速软件可能存在误差，建议以实际 4K 视频秒开率和丢包率为准。" }
+  ];
+  mistakes = [
+    "盲目追求极致的低延迟（Ping），而忽略了丢包率（Packet Loss）对实际体验的致命影响。",
+    "将 IPLC/IEPL 专线神话化，认为专线绝对不卡。实际上如果在国内入口端拥堵，专线同样会受到影响。"
+  ];
+} else if (category === '客户端与 Clash' || category === '常用网络工具') {
+  faq = [
+    { q: "配置导入后为什么还是无法正常连接国际网络？", a: "请首先检查系统时间是否同步，其次确认是否有其他安全软件拦截了核心进程，最后检查节点本身是否已经失效。" },
+    { q: "TUN 模式和系统代理有什么区别？", a: "系统代理依赖软件主动走代理端口，而 TUN 模式会在操作系统底层创建一个虚拟网卡，强制接管所有软件的流量，适合游戏和不走代理的特殊应用。" }
+  ];
+  mistakes = [
+    "同时开启多个代理客户端，导致系统路由表冲突，网络彻底断开。",
+    "不看文档随意修改核心配置文件（如 config.yaml），导致语法错误客户端无法启动。"
+  ];
+} else {
+  // Default for 网络知识, 进阶网络概念, etc.
+  faq = [
+    { q: "这篇文章中提到的技术适合普通用户折腾吗？", a: "部分进阶网络协议和路由拓扑知识主要面向极客和开发者，普通用户只需了解基本概念，配合成熟的客户端使用即可。" },
+    { q: "网络环境发生变化时，这些原理还适用吗？", a: "底层的 TCP/IP 和路由协议在较长一段时间内是固定标准的，但上层的代理特征和混淆技术会随着防火墙的升级而不断演进。" }
+  ];
+  mistakes = [
+    "将代理协议的加密等同于绝对的匿名性。代理只能加密传输过程，并不能隐藏你的最终访问目标或保护你的账号隐私。",
+    "过度优化网络参数（如随意修改 TCP 拥塞控制算法 BBR 参数），在不了解原理的情况下可能适得其反。"
+  ];
+}
+
+// 2. Build Highly Contextual Official Links (First-hand Evidence Chain)
+const lowerTitle = (title || '').toLowerCase();
+const lowerKeywords = (keywords || '').toLowerCase();
+const combinedText = lowerTitle + ' ' + lowerKeywords;
+
+let officialLinks = [];
+
+if (combinedText.includes('chatgpt') || combinedText.includes('openai') || combinedText.includes('gpt')) {
+  officialLinks.push({ text: "OpenAI 官方文档与研究库 (First-hand)", url: "https://platform.openai.com/docs/" });
+}
+if (combinedText.includes('claude') || combinedText.includes('anthropic')) {
+  officialLinks.push({ text: "Anthropic 官方技术支持与研究 (First-hand)", url: "https://www.anthropic.com/research" });
+}
+if (combinedText.includes('copilot') || combinedText.includes('windows') || combinedText.includes('microsoft')) {
+  officialLinks.push({ text: "Microsoft Learn 官方技术文档 (First-hand)", url: "https://learn.microsoft.com/" });
+}
+if (combinedText.includes('apple') || combinedText.includes('mac') || combinedText.includes('ios')) {
+  officialLinks.push({ text: "Apple Developer Documentation (First-hand)", url: "https://developer.apple.com/documentation/" });
+}
+if (combinedText.includes('google') || combinedText.includes('android')) {
+  officialLinks.push({ text: "Google Developers 官方资源 (First-hand)", url: "https://developers.google.com/" });
+}
+if (combinedText.includes('clash') || combinedText.includes('metacubex')) {
+  officialLinks.push({ text: "MetaCubeX 官方开源代码库 (GitHub)", url: "https://github.com/MetaCubeX" });
+  officialLinks.push({ text: "Clash Meta 官方配置文档", url: "https://wiki.metacubex.one/" });
+}
+if (combinedText.includes('sing-box')) {
+  officialLinks.push({ text: "sing-box 官方开源代码库 (GitHub)", url: "https://github.com/SagerNet/sing-box" });
+  officialLinks.push({ text: "sing-box 路由与核心配置指南", url: "https://sing-box.sagernet.org/" });
+}
+if (combinedText.includes('wireguard')) {
+  officialLinks.push({ text: "WireGuard 官方技术白皮书 (PDF)", url: "https://www.wireguard.com/papers/wireguard.pdf" });
+}
+if (combinedText.includes('github') || combinedText.includes('开源')) {
+  officialLinks.push({ text: "GitHub 官方开源社区", url: "https://github.com/" });
+}
+if (combinedText.includes('dns') || combinedText.includes('测速') || combinedText.includes('cloudflare') || combinedText.includes('cdn')) {
+  officialLinks.push({ text: "Cloudflare 官方网络原理与学习中心", url: "https://www.cloudflare.com/learning/" });
+}
+if (combinedText.includes('协议') || combinedText.includes('tcp') || combinedText.includes('udp') || combinedText.includes('路由')) {
+  officialLinks.push({ text: "IETF RFC 官方国际互联网标准协议库 (RFCs)", url: "https://www.ietf.org/standards/rfcs/" });
+}
+
+// Deduplicate URLs
+officialLinks = Array.from(new Map(officialLinks.map(link => [link.url, link])).values());
+
+// Fallbacks if no specific keywords matched
+if (officialLinks.length === 0) {
+  if (category === '品牌介绍') {
+    officialLinks.push({ text: "Speedtest 国际测速标准", url: "https://www.speedtest.net/" });
+    officialLinks.push({ text: "Cloudflare 官方测速", url: "https://speed.cloudflare.com/" });
+  } else {
+    officialLinks.push({ text: "IETF RFC 国际互联网标准协议", url: "https://www.ietf.org/standards/rfcs/" });
+  }
+}
+---
+
+<div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
+  <section class="mb-10" itemscope itemtype="https://schema.org/FAQPage">
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">常见问题 (FAQ)</h2>
+    <div class="space-y-6">
+      {faq.map((item) => (
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2" itemprop="name">
+            <span class="text-primary-600 dark:text-primary-400 mr-2">Q:</span>{item.q}
+          </div>
+          <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed" itemprop="text">
+              <span class="text-emerald-600 dark:text-emerald-500 font-bold mr-2">A:</span>{item.a}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">常见误区与注意事项</h2>
+    <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-xl p-6">
+      <ul class="space-y-3 mb-0 text-amber-900 dark:text-amber-200">
+        {mistakes.map((m) => (
+          <li class="flex items-start">
+            <svg class="w-5 h-5 mr-3 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <span class="leading-relaxed text-sm">{m}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">官方资料与延伸阅读</h2>
+    <ul class="space-y-3 text-slate-600 dark:text-slate-400">
+      {officialLinks.map((link) => (
+        <li class="flex items-center">
+          <svg class="w-4 h-4 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          <a href={link.url} target="_blank" rel="noopener" class="hover:text-primary-600 dark:hover:text-primary-400 hover:underline transition-colors">
+            {link.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</div>

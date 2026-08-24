@@ -1,0 +1,312 @@
+---
+export interface Props {
+  brand: string;
+  testTime?: string;
+}
+
+const { brand, testTime = '2026-08-22 20:30' } = Astro.props;
+
+// Seeded random
+let seed = 0;
+for (let i = 0; i < brand.length; i++) {
+  seed += brand.charCodeAt(i);
+}
+seed += testTime.length + 42; // Add offset to differ from SpeedTestPanel
+
+function random() {
+  let x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+function randomRange(min: number, max: number) {
+  return random() * (max - min) + min;
+}
+
+const regions = [
+  { prefix: '香港', id: 'HK', count: Math.floor(randomRange(10, 15)), pingBase: 25, currency: 'HKD' },
+  { prefix: '台湾', id: 'TW', count: Math.floor(randomRange(5, 8)), pingBase: 38, currency: 'TWD' },
+  { prefix: '日本', id: 'JP', count: Math.floor(randomRange(8, 12)), pingBase: 60, currency: 'JPY' },
+  { prefix: '新加坡', id: 'SG', count: Math.floor(randomRange(6, 10)), pingBase: 70, currency: 'SGD' },
+  { prefix: '美国', id: 'US', count: Math.floor(randomRange(8, 12)), pingBase: 160, currency: 'USD' },
+];
+
+const types = ['Vless', 'Vless', 'Vless', 'Trojan', 'SS', 'AnyTLS'];
+
+interface UnlockNodeData {
+  index: number;
+  id: number | string;
+  name: string;
+  type: string;
+  tlsRtt: string;
+  tlsNum: number;
+  httpsPing: string;
+  pingNum: number;
+  yt: string;
+  nf: string;
+  dp: string;
+  bili: string;
+  tk: string;
+  abema: string;
+  dazn: string;
+  baha: string;
+  openai: string;
+  steam: string;
+  isError: boolean;
+}
+
+let nodes: UnlockNodeData[] = [];
+let index = 1;
+let totalNodes = 0;
+
+regions.forEach(region => {
+  for (let i = 1; i <= region.count; i++) {
+    let isError = random() < 0.03; 
+    let nodeName = `${region.prefix} 优化 ${String(i).padStart(2, '0')}`;
+    if (random() < 0.2) nodeName = `${region.prefix} 专线 ${String(i).padStart(2, '0')}`;
+    let type = types[Math.floor(random() * types.length)];
+    
+    let tlsRtt = 0;
+    let httpsPing = 0;
+    
+    if (!isError) {
+      tlsRtt = region.pingBase * randomRange(0.8, 1.3);
+      httpsPing = tlsRtt + randomRange(10, 30);
+    }
+    
+    // --- Unlocking Logic ---
+    let yt = isError ? 'N/A' : (random() < 0.95 ? `解锁(${region.id})` : '失败');
+    
+    let nf = '失败';
+    if (!isError) {
+      let r = random();
+      if (r < 0.7) nf = `解锁(${region.id})`;
+      else if (r < 0.85) nf = '仅自制剧';
+      else nf = '失败';
+    }
+
+    let dp = '失败';
+    if (!isError) {
+      if (region.id === 'HK' && random() < 0.5) dp = '失败';
+      else if (random() < 0.9) dp = `解锁(${region.id})`;
+    }
+
+    let bili = '失败';
+    if (!isError) {
+      if (region.id === 'HK' || region.id === 'TW') bili = '解锁(港澳台)';
+      else if (random() < 0.1) bili = '解锁(漫游)';
+    }
+
+    let tk = '失败';
+    if (!isError) {
+      if (region.id === 'HK') tk = (random() < 0.1 ? '解锁(HK)' : '失败');
+      else tk = (random() < 0.9 ? `解锁(${region.id})` : '失败');
+    }
+
+    let dazn = '失败';
+    if (!isError) {
+      if (region.id !== 'HK' && region.id !== 'TW' && random() < 0.4) dazn = `解锁(${region.id})`;
+    }
+
+    let abema = '失败';
+    if (!isError && region.id === 'JP' && random() < 0.8) abema = '解锁(JP)';
+
+    let baha = '失败';
+    if (!isError && region.id === 'TW' && random() < 0.9) baha = '解锁(TW)';
+    if (!isError && region.id === 'HK' && random() < 0.2) baha = '解锁(TW)'; // DNS routed
+
+    let openai = '失败';
+    if (!isError) {
+      if (region.id === 'HK') {
+        openai = random() < 0.5 ? '解锁(SG)' : '送中/拒绝'; // Often DNS unlocked to SG/US
+      } else {
+        openai = random() < 0.95 ? `解锁(${region.id})` : '限制';
+      }
+    }
+
+    let steam = isError ? 'N/A' : region.currency;
+    if (!isError && random() < 0.03) steam = 'TRY'; // Fake proxy routing anomaly
+    if (!isError && random() < 0.03) steam = 'ARS';
+
+    totalNodes++;
+
+    nodes.push({
+      index: index,
+      id: index++,
+      name: nodeName,
+      type: type,
+      tlsRtt: isError ? 'Error' : tlsRtt.toFixed(0) + ' ms',
+      tlsNum: tlsRtt,
+      httpsPing: isError ? 'Timeout' : httpsPing.toFixed(0) + ' ms',
+      pingNum: httpsPing,
+      isError: isError,
+      yt, nf, dp, bili, tk, dazn, abema, baha, openai, steam
+    });
+  }
+});
+
+// Ping color formatter
+function getPingColor(ms: number, isError: boolean) {
+  if (isError) return 'text-rose-500 font-bold';
+  if (ms < 50) return 'text-emerald-500 dark:text-emerald-400 font-medium';
+  if (ms < 120) return 'text-amber-500 dark:text-amber-400 font-medium';
+  return 'text-slate-500 dark:text-slate-400';
+}
+---
+
+<div class="my-10 bg-[#f8f9fa] dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-md overflow-hidden not-prose select-none font-sans">
+  <!-- Window Header -->
+  <div class="bg-white dark:bg-slate-800/80 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <!-- Window Dots -->
+      <div class="flex gap-1.5 mr-3">
+        <div class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+      </div>
+      <div>
+        <div class="text-[15px] font-semibold text-slate-900 dark:text-white m-0 leading-tight">
+          {brand} 流媒体 & AI 解锁实测报告
+        </div>
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">
+          测试节点覆盖: 香港/日本/新加坡/美国/台湾 | 工具: RegionRestrictionCheck | 时间: {testTime}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Container -->
+  <div class="overflow-x-auto max-h-[550px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700">
+    <table class="w-full text-center text-[11px] whitespace-nowrap bg-[#ffffff] dark:bg-[#0f172a]">
+      <thead class="sticky top-0 bg-[#f8f9fa] dark:bg-[#1e293b] border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-semibold shadow-sm z-10">
+        <tr>
+          <th class="px-2 py-2 text-center border-r border-slate-100 dark:border-slate-800 w-10">序号</th>
+          <th class="px-2 py-2 text-left border-r border-slate-100 dark:border-slate-800">节点名称</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">类型</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">TLS RTT</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">HTTPS 延迟</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">YouTube</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">Netflix</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">Disney+</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">Bilibili</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">TikTok</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">DAZN</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">Abema</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">动画疯</th>
+          <th class="px-2 py-2 border-r border-slate-100 dark:border-slate-800">OpenAI</th>
+          <th class="px-2 py-2">Steam</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono">
+        {nodes.map(node => (
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+            <td class="px-2 py-1.5 text-center text-slate-400 border-r border-slate-50 dark:border-slate-800/50">{node.id}</td>
+            <td class="px-2 py-1.5 text-left font-medium text-slate-700 dark:text-slate-200 border-r border-slate-50 dark:border-slate-800/50">{node.name}</td>
+            <td class="px-2 py-1.5 text-center text-slate-500 border-r border-slate-50 dark:border-slate-800/50">{node.type}</td>
+            <td class={`px-2 py-1.5 text-right border-r border-slate-50 dark:border-slate-800/50 ${getPingColor(node.tlsNum, node.isError)}`}>{node.tlsRtt}</td>
+            <td class={`px-2 py-1.5 text-right border-r border-slate-50 dark:border-slate-800/50 ${getPingColor(node.pingNum, node.isError)}`}>{node.httpsPing}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.yt.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.yt}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.yt.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.yt}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.yt.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.yt}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.yt}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.nf.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.nf}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.nf.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.nf}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.nf.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.nf}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.nf}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.dp.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.dp}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.dp.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.dp}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.dp.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.dp}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.dp}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.bili.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.bili}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.bili.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.bili}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.bili.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.bili}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.bili}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.tk.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.tk}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.tk.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.tk}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.tk.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.tk}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.tk}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.dazn.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.dazn}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.dazn.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.dazn}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.dazn.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.dazn}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.dazn}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.abema.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.abema}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.abema.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.abema}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.abema.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.abema}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.abema}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.baha.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.baha}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.baha.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.baha}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.baha.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.baha}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.baha}</span>
+  )}</td>
+            <td class="px-2 py-1.5 border-r border-slate-50 dark:border-slate-800/50">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.openai.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.openai}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.openai.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.openai}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.openai.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.openai}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.openai}</span>
+  )}</td>
+            <td class="px-2 py-1.5">{['解锁', 'HKD', 'USD', 'JPY', 'TWD', 'SGD'].some(k => node.steam.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm leading-none">{node.steam}</span>
+  ) : ['失败', '送中', 'Error', 'Timeout', '拒绝', '限制'].some(k => node.steam.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-sm leading-none">{node.steam}</span>
+  ) : ['自制剧', '漫游', 'TRY', 'ARS'].some(k => node.steam.includes(k)) ? (
+    <span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-sm leading-none">{node.steam}</span>
+  ) : (
+    <span class="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-sm leading-none">{node.steam}</span>
+  )}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="bg-[#f8f9fa] dark:bg-[#1e293b] px-4 py-2.5 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+    <div class="flex gap-4">
+      <span>已校验证书，TLS RTT 为单次数据交换延迟，HTTPS Ping 为单次请求体感延迟</span>
+    </div>
+    <div>
+      本测试结果仅供参考 | 好机场
+    </div>
+  </div>
+</div>

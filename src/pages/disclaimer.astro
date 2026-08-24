@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "免责声明 | 好机场",
+      "description": "好机场的免责声明。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "免责声明",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="免责声明 | 好机场" description="好机场的免责声明。" jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto prose dark:prose-invert py-12">
+    <h1>免责声明 (Disclaimer)</h1>
+    <p>在使用本网站提供的信息和服务之前，请仔细阅读以下声明。</p>
+    <h2>内容仅供参考</h2>
+    <p>本网站的所有文章、教程、评测及相关内容仅供学习、研究和参考之用。作者力求提供准确、及时的信息，但不对其完整性、准确性或适用性做出任何绝对保证。</p>
+    <h2>合规与法律</h2>
+    <p>本站关于网络、VPN、节点等技术的探讨纯属技术交流。请用户务必遵守当地法律法规，切勿将相关技术用于任何非法用途。用户因使用本站信息而引发的任何法律纠纷或损失，本站概不负责。</p>
+    <h2>关联服务与第三方产品</h2>
+    <p>本站内容提及的机场服务属于本站自有或深度关联服务。本站并非独立的第三方评测机构，相关介绍和比较不代表独立第三方的客观标准。对于文中提及的真正第三方产品（如各类开源代理客户端），其软件质量和功能可能随时发生变化。请用户充分了解本站的商业关联，自行甄别并承担相关使用风险。</p>
+  </div>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import { getEntry } from 'astro:content';
+import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import { readingTime } from '../../utils/readingTime';
+
+const post = await getEntry('blog', 'client-download-mac');
+if (!post) {
+  return Astro.redirect('/404');
+}
+const { Content, headings } = await post.render();
+const readTime = readingTime(post.body);
+---
+
+<BlogPostLayout {...post.data} readTime={readTime} headings={headings}>
+  <Content />
+</BlogPostLayout>

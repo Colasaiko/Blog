@@ -1,0 +1,35 @@
+﻿---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FloatingAction from '../components/FloatingAction.astro';
+import AiChatWidget from '../components/AiChatWidget.astro';
+import '../styles/global.css';
+
+export interface Props {
+  noindex?: boolean;
+  title: string;
+  description: string;
+  jsonLd?: string;
+  image?: string;
+	type?: string;
+}
+
+const { title, description, jsonLd, type, image, noindex } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="antialiased scroll-smooth scroll-pt-28">
+  <head>
+    <BaseHead title={title} description={description} jsonLd={jsonLd} type={type} image={image} noindex={noindex} />
+  </head>
+  <body class="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-primary-500/30 relative">
+    <Header />
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-10">
+      <slot />
+    </main>
+    <FloatingAction />
+    <AiChatWidget />
+    <Footer />
+  </body>
+</html>

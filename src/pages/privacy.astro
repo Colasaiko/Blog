@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "隐私政策 | 好机场",
+      "description": "好机场的隐私政策。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "隐私政策",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="隐私政策 | 好机场" description="好机场的隐私政策。" jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto prose dark:prose-invert py-12">
+    <h1>隐私政策 (Privacy Policy)</h1>
+    <p>欢迎访问好机场。我们非常重视您的隐私保护。</p>
+    <h2>数据收集</h2>
+    <p>本网站为纯静态博客，不强制要求注册，也不主动收集用户的个人敏感信息。我们可能使用匿名的分析工具来统计访问流量，这仅用于改善网站内容和体验。</p>
+    <h2>Cookies</h2>
+    <p>我们仅使用必要的 Cookies 来记录您的基本偏好（例如：深色模式切换状态）。我们不会将此类信息用于跨站追踪或广告定向。</p>
+    <h2>外部链接</h2>
+    <p>我们的文章可能包含指向其他网站的链接。我们不对这些外部网站的隐私做法或内容负责，建议您在访问时查阅其隐私声明。</p>
+    <p><em>最后更新日期：2026年8月</em></p>
+  </div>
+</BaseLayout>

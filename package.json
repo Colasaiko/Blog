@@ -1,0 +1,30 @@
+{
+  "name": "bestjichang-blog",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.3",
+    "@astrojs/mdx": "3.1.5",
+    "@astrojs/node": "^8.3.3",
+    "@astrojs/rss": "4.0.7",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/tailwind": "5.1.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/marked": "^5.0.2",
+    "astro": "4.14.2",
+    "dompurify": "^3.4.14",
+    "extract-zip": "^2.0.1",
+    "iconv-lite": "^0.7.3",
+    "marked": "^18.0.10",
+    "reading-time": "^1.5.0",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  }
+}

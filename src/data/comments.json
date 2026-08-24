@@ -1,0 +1,94 @@
+[
+  {
+    "id": "hist_1",
+    "username": "用户_dvu00u",
+    "text": "博主推荐的这几个节点真的快，昨晚高峰期看油管 4K 完全不卡，很稳。",
+    "createdAt": "2026-04-10T11:15:00Z", 
+    "likes": 24,
+    "replies": [
+      {
+        "id": "hist_1_r1",
+        "username": "用户_smtcyp",
+        "text": "确实，我也刚上车了主页排第一的那家，目前体验非常丝滑。",
+        "createdAt": "2026-04-10T11:22:00Z",
+        "likes": 5,
+        "replyToUser": "用户_dvu00u"
+      }
+    ]
+  },
+  {
+    "id": "hist_2",
+    "username": "用户_pwxcp5",
+    "text": "最近墙是不是又加高了？之前用的好几个老牌子都陆续连不上了 😭",
+    "createdAt": "2026-05-18T13:40:00Z",
+    "likes": 42,
+    "replies": [
+      {
+        "id": "hist_2_r1",
+        "username": "用户_ss21s7",
+        "text": "开会或者特殊时期是这样的，建议备一个专线节点保底，普通中转这时候容易遭重。",
+        "createdAt": "2026-05-18T13:45:00Z",
+        "likes": 12,
+        "replyToUser": "用户_pwxcp5"
+      },
+      {
+        "id": "hist_2_r2",
+        "username": "用户_fww0ta",
+        "text": "幸好在这里找到了备用的，不然我都不知道去哪找靠谱的了。",
+        "createdAt": "2026-05-18T13:58:00Z",
+        "likes": 8,
+        "replyToUser": "用户_pwxcp5"
+      }
+    ]
+  },
+  {
+    "id": "hist_3",
+    "username": "用户_pk77hm",
+    "text": "请问大家现在手机端都用哪个客户端呀？感觉有的软件挂在后台特别耗电。",
+    "createdAt": "2026-07-05T09:10:00Z",
+    "likes": 18,
+    "replies": [
+      {
+        "id": "hist_3_r1",
+        "username": "用户_6bs5jb",
+        "text": "安卓的话直接用 Surfboard 或者 Clash Meta for Android，都很省电。",
+        "createdAt": "2026-07-05T09:14:00Z",
+        "likes": 15,
+        "replyToUser": "用户_pk77hm"
+      },
+      {
+        "id": "hist_3_r2",
+        "username": "用户_n20nwo",
+        "text": "苹果就无脑 Shadowrocket 吧，便宜又好用。",
+        "createdAt": "2026-07-05T09:28:00Z",
+        "likes": 3,
+        "replyToUser": "用户_pk77hm"
+      }
+    ]
+  },
+  {
+    "id": "comment_A",
+    "username": "用户_0tu18b",
+    "text": "那个测速和延迟科普的文章写得太详细了，终于搞懂带宽和真实延迟的区别了！",
+    "createdAt": "2026-08-05T14:20:00Z",
+    "likes": 12,
+    "replies": [
+      {
+        "id": "reply_B",
+        "username": "用户_s1aymd",
+        "text": "同感，以前只会看 Ping 值，现在才知道丢包率更重要。",
+        "createdAt": "2026-08-05T14:35:00Z",
+        "likes": 3,
+        "replyToUser": "用户_0tu18b"
+      }
+    ]
+  },
+  {
+    "id": "comment_D",
+    "username": "用户_ebykqq",
+    "text": "感谢站长整理的这些资源，省了我好多自己测试踩坑的钱，支持一下！",
+    "createdAt": "2026-08-09T08:15:00Z",
+    "likes": 5,
+    "replies": []
+  }
+]

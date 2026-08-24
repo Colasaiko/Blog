@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from './ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  title: string;
+  description: string;
+  categoryFilter: string;
+}
+
+const { title, description, categoryFilter } = Astro.props;
+
+const filters = categoryFilter.split(',').map(s => s.trim().toLowerCase());
+
+const posts = (await getCollection('blog'))
+  .filter(post => {
+    const postCat = post.data.category.toLowerCase();
+    return categoryFilter === 'all' || filters.includes(postCat) || filters.some(f => postCat.includes(f));
+  })
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": `${title} | 好机场`,
+      "description": description
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": title,
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+---
+
+<BaseLayout title={`${title} | 好机场`} description={description} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto">
+    <header class="mb-12">
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">{title}</h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400">
+        {description}
+      </p>
+    </header>
+
+    {posts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {posts.map((post) => (
+          <ArticleCard 
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+            category={post.data.category}
+            content={post.body}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-20 text-slate-500">
+        <p>该分类下暂无文章，敬请期待！</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

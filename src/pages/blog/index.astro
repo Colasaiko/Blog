@@ -1,0 +1,361 @@
+---
+import SubpageNav from '../../components/SubpageNav.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).filter(post => post.data.category !== '品牌介绍').sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const allCategories = [...new Set(posts.map(post => post.data.category))].filter(Boolean);
+
+const postsByCategory = allCategories.map(cat => ({
+  category: cat,
+  posts: posts.filter(p => p.data.category === cat)
+}));
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://bestjichang.com/blog/#webpage",
+      "url": "https://bestjichang.com/blog/",
+      "name": "网络知识库 | 好机场",
+      "description": "所有技术文章和教程。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": "https://bestjichang.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "网络知识库",
+          "item": "https://bestjichang.com/blog/"
+        }
+      ]
+    }
+  ]
+});
+---
+
+<BaseLayout title="机场评测与网络技术博客：最新测速报告与配置指南" description="阅读我们最新发布的机场评测报告和网络技术教程。本板块重点追踪各品牌的节点表现、晚高峰测速变化以及流媒体解锁动态，同时提供各大平台客户端的详细配置指南，所有评测均基于本站真实核验体系，客观记录网络表现。" jsonLd={jsonLd} image="/og/og-blog.jpg">
+  
+  <div class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8">
+    <div class="flex flex-col lg:flex-row gap-8 items-start mb-24">
+      
+      <!-- Left Sidebar Navigation Tree -->
+      <aside id="knowledge-sidebar" class="hidden lg:block w-full lg:w-72 2xl:w-80 flex-shrink-0 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-3xl transform-gpu overscroll-contain custom-scrollbar " style="will-change: transform, scroll-position; -webkit-overflow-scrolling: touch;">
+        <div class="bg-slate-50 dark:bg-slate-900 p-6 border border-slate-200 dark:border-slate-800 min-h-full 2xl:shadow-xl 2xl:bg-white dark:2xl:bg-slate-900">
+          <div class="font-black text-lg text-slate-900 dark:text-white mb-6 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+            知识库目录
+          </div>
+          
+          <div class="space-y-8">
+            {postsByCategory.map(group => (
+              <div class="sidebar-group" data-category={group.category}>
+                <button type="button" class="category-toggle-btn w-full flex items-center justify-between font-bold text-slate-900 dark:text-white mb-3 text-sm uppercase tracking-wider group text-left">
+                  {group.category}
+                  <svg class="w-4 h-4 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="category-content transition-all duration-300 overflow-hidden" style="max-height: 2000px;">
+                <ul class="space-y-2.5 border-l border-slate-200 dark:border-slate-800 ml-2 pl-4">
+                  {group.posts.map(post => (
+                    <li class="sidebar-item" data-category={group.category} data-title={post.data.title.toLowerCase()} data-slug={post.slug}>
+                      <a href={`/blog/${post.slug}/`} class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 flex items-center justify-between transition-colors" title={post.data.title}>
+                        <span class="truncate block pr-2">{post.data.title}</span>
+                        <span class="recently-read-badge hidden flex-shrink-0 px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded shadow-sm">刚读过</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main Content -->
+      <div class="flex-1 min-w-0 w-full space-y-8 relative z-10">
+        
+        <header class="text-left pt-2 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">网络知识库</h1>
+          <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+            分享全面的网络知识、科普教程以及各类网络工具的使用技巧。
+          </p>
+</header>
+        <SubpageNav exclude="blog" />
+<!-- Filter and Search -->
+        <div class="mb-8 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center bg-white dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <div class="flex flex-wrap gap-2" id="category-filters" style="scrollbar-width: none; -ms-overflow-style: none;">
+<style>
+#category-filters::-webkit-scrollbar { display: none; }
+</style>
+            <button class="filter-btn active whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-full bg-primary-600 text-white transition-colors" data-filter="all">全部</button>
+            {allCategories.map(cat => (
+              <button class="filter-btn whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" data-filter={cat}>{cat}</button>
+            ))}
+          </div>
+          
+          <div class="relative w-full md:w-64 flex-shrink-0">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <input type="text" id="post-search" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 transition-shadow" placeholder="搜索文章……" />
+          </div>
+        </div>
+
+        <div class="space-y-6" id="post-list">
+          {
+            posts.map((post) => (
+              <div class="post-item" data-category={post.data.category} data-title={post.data.title.toLowerCase()} data-slug={post.slug}>
+                <ArticleCard 
+                  title={post.data.title}
+                  description={post.data.description}
+                  pubDate={post.data.pubDate} updatedDate={post.data.updatedDate}
+                  slug={post.slug}
+                  category={post.data.category}
+                  content={post.body}
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+          <svg class="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div class="text-lg font-semibold text-slate-900 dark:text-white mb-1">未找到相关文章</div>
+          <p class="text-slate-500 dark:text-slate-400">请尝试更换分类或调整搜索关键词</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const setupFilters = () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const searchInput = document.getElementById('post-search') as HTMLInputElement;
+      const postItems = document.querySelectorAll('.post-item');
+      const emptyState = document.getElementById('empty-state');
+      const sidebarGroups = document.querySelectorAll('.sidebar-group');
+        
+        // Accordion logic
+        const toggleBtns = document.querySelectorAll('.category-toggle-btn');
+        toggleBtns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // Prevent drag from triggering click
+            if ((window as any).isDraggingSidebar) {
+              e.preventDefault();
+              return;
+            }
+            const svg = btn.querySelector('svg');
+            const content = btn.nextElementSibling as HTMLElement;
+            if (svg && content) {
+              if (svg.classList.contains('-rotate-90')) {
+                svg.classList.remove('-rotate-90');
+                content.style.maxHeight = '2000px';
+                content.style.opacity = '1';
+              } else {
+                svg.classList.add('-rotate-90');
+                content.style.maxHeight = '0px';
+                content.style.opacity = '0';
+              }
+            }
+          });
+        });
+
+        // Drag to scroll logic
+        const sidebar = document.getElementById('knowledge-sidebar');
+        if (sidebar) {
+          let isDown = false;
+          let startY = 0;
+          let scrollTop = 0;
+          
+          // Prevent native link dragging which breaks the JS scroll
+          sidebar.querySelectorAll('a').forEach(a => {
+            a.addEventListener('dragstart', (e) => e.preventDefault());
+          });
+          
+          sidebar.addEventListener('mousedown', (e) => {
+            isDown = true;
+            sidebar.style.cursor = 'grabbing';
+            sidebar.classList.add('select-none'); // Prevent text selection while dragging
+            (window as any).isDraggingSidebar = false;
+            startY = e.pageY - sidebar.offsetTop;
+            scrollTop = sidebar.scrollTop;
+          });
+          
+          sidebar.addEventListener('mouseleave', () => {
+            isDown = false;
+            sidebar.style.cursor = '';
+            sidebar.classList.remove('select-none');
+          });
+          
+          sidebar.addEventListener('mouseup', () => {
+            isDown = false;
+            sidebar.style.cursor = '';
+            sidebar.classList.remove('select-none');
+            // Reset dragging flag after a short delay so click event fires correctly
+            setTimeout(() => { (window as any).isDraggingSidebar = false; }, 50);
+          });
+          
+          sidebar.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            const y = e.pageY - sidebar.offsetTop;
+            const walk = (y - startY) * 1.5; // Multiply by 1.5 to make scrolling feel more effortless
+            if (Math.abs(walk) > 5) {
+              (window as any).isDraggingSidebar = true;
+              e.preventDefault();
+              sidebar.scrollTop = scrollTop - walk;
+            }
+          });
+        }
+      
+      if (!searchInput) return;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentCategory = urlParams.get('category') || 'all';
+      let searchQuery = urlParams.get('q') || '';
+
+      // Initialize UI state from URL
+      if (searchQuery) {
+        searchInput.value = searchQuery;
+      }
+
+      const updateURL = () => {
+        const newUrl = new URL(window.location.href);
+        if (currentCategory === 'all') {
+          newUrl.searchParams.delete('category');
+        } else {
+          newUrl.searchParams.set('category', currentCategory);
+        }
+        
+        if (searchQuery) {
+          newUrl.searchParams.set('q', searchQuery);
+        } else {
+          newUrl.searchParams.delete('q');
+        }
+        
+        window.history.replaceState({}, '', newUrl);
+      };
+
+      const filterPosts = () => {
+        let visibleCount = 0;
+        
+        // Filter main right-side cards
+        postItems.forEach(item => {
+          const category = item.getAttribute('data-category');
+          const title = item.getAttribute('data-title') || '';
+          
+          const matchCategory = currentCategory === 'all' || category === currentCategory;
+          const matchSearch = title.includes(searchQuery);
+          
+          if (matchCategory && matchSearch) {
+            (item as HTMLElement).style.display = 'block';
+            visibleCount++;
+          } else {
+            (item as HTMLElement).style.display = 'none';
+          }
+        });
+        
+        // Filter left sidebar tree
+        sidebarGroups.forEach(group => {
+          let hasVisibleItem = false;
+          
+          const items = group.querySelectorAll('.sidebar-item');
+          items.forEach(item => {
+            const category = item.getAttribute('data-category');
+            const title = item.getAttribute('data-title') || '';
+            
+            const matchCategory = currentCategory === 'all' || category === currentCategory;
+            const matchSearch = title.includes(searchQuery);
+            
+            if (matchCategory && matchSearch) {
+              (item as HTMLElement).style.display = 'block';
+              hasVisibleItem = true;
+            } else {
+              (item as HTMLElement).style.display = 'none';
+            }
+          });
+          
+          // Hide the whole category group if no items are visible
+          (group as HTMLElement).style.display = hasVisibleItem ? 'block' : 'none';
+        });
+        
+        if (emptyState) {
+          if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
+      };
+
+      const updateActiveButton = () => {
+        filterBtns.forEach(b => {
+          if (b.getAttribute('data-filter') === currentCategory) {
+            b.className = 'filter-btn active whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-full bg-primary-600 text-white transition-colors';
+          } else {
+            b.className = 'filter-btn whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors';
+          }
+        });
+      };
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          currentCategory = target.getAttribute('data-filter') || 'all';
+          updateActiveButton();
+          filterPosts();
+          updateURL();
+        });
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = (e.target as HTMLInputElement).value.toLowerCase();
+        filterPosts();
+        updateURL();
+      });
+
+      // Show recently read badges
+      const lastRead = localStorage.getItem('lastReadArticle');
+      if (lastRead) {
+        // Find card
+        const readCard = document.querySelector(`.post-item[data-slug="${lastRead}"]`);
+        if (readCard) {
+          const badge = readCard.querySelector('.recently-read-badge');
+          if (badge) badge.classList.remove('hidden');
+        }
+        
+        // Find sidebar link
+        const readSidebar = document.querySelector(`.sidebar-item[data-slug="${lastRead}"]`);
+        if (readSidebar) {
+          const badge = readSidebar.querySelector('.recently-read-badge');
+          if (badge) {
+            badge.classList.remove('hidden');
+            // Auto scroll sidebar to the recently read item so user doesn't lose context
+            setTimeout(() => {
+              readSidebar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+          }
+        }
+      }
+
+      // Initial filter on load
+      updateActiveButton();
+      filterPosts();
+    };
+
+    setupFilters();
+  </script>
+</BaseLayout>

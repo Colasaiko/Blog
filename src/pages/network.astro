@@ -1,0 +1,323 @@
+---
+import SubpageNav from '../components/SubpageNav.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const beginner = [
+  "01 什么是网络线路？",
+  "02 什么是 IP 地址？",
+  "03 不同 IP 类型有什么区别？",
+  "04 什么是客户端？",
+  "05 什么是网络协议？",
+  "06 什么是服务器？新手小白的网络基建入门",
+  "07 什么是云服务器？",
+  "08 什么是数据中心？",
+  "09 什么是带宽？",
+  "10 什么是网络延迟？Ping 与 RTT 有什么区别？",
+  "11 什么是丢包？",
+  "12 BGP 是什么？网络线路新手基础",
+  "13 专线是什么？普通宽带与专线的核心区别",
+  "14 什么是原生 IP？流媒体解锁与跨区新手指南",
+  "15 共享 IP 与独享 IP：新手该如何选择？",
+  "16 为什么同一个网络服务不同地区体验不同？",
+  "17 为什么测速很快，实际使用却不一定快？",
+  "18 如何查看自己的 IP？",
+  "19 如何测试网络延迟和丢包？",
+  "20 如何选择适合自己的网络服务？"
+];
+
+const advanced = [
+  "01 什么是路由？",
+  "02 什么是 ASN？",
+  "03 BGP 路由是什么？ASN、eBGP 与 iBGP 基础解析",
+  "04 什么是 BGP 多线？",
+  "05 什么是网络运营商？",
+  "06 什么是网络中转？",
+  "07 什么是入口节点和出口节点？",
+  "08 物理专线技术解析：内网穿透与 QoS 保障原理",
+  "09 什么是 IPLC？",
+  "10 什么是 IEPL？",
+  "11 什么是 CN2？",
+  "12 什么是 CMI？",
+  "13 什么是 RTT？",
+  "14 什么是抖动（Jitter）？",
+  "15 什么是带宽与吞吐量？",
+  "16 什么是网络拥塞？",
+  "17 为什么晚上网络可能变慢？",
+  "18 为什么不同地区连接同一个服务器体验不同？",
+  "19 什么是数据中心 IP？",
+  "20 什么是住宅 IP？",
+  "21 原生 IP 深度解析：IP 广播、信誉度与路由识别",
+  "22 共享 IP 与独立 IP 技术分析：反代、端口与隔离机制",
+  "23 什么是 IP 段？"
+];
+
+const clash = [
+  "01 什么是 Clash？",
+  "02 Clash 和其他客户端有什么区别？",
+  "03 什么是 Clash 配置文件？",
+  "04 Clash 配置文件有哪些部分？",
+  "05 什么是节点？",
+  "06 什么是订阅链接？",
+  "07 什么是策略组？",
+  "08 什么是规则模式？",
+  "09 什么是直连模式？",
+  "10 什么是代理模式？",
+  "11 什么是分流？",
+  "12 什么是代理组？",
+  "13 Clash 如何导入配置？",
+  "14 Clash 如何更新订阅？",
+  "15 Clash 如何选择节点？",
+  "16 Clash 如何切换代理模式？",
+  "17 为什么 Clash 启动后没有网络？",
+  "18 为什么 Clash 有节点但连接失败？",
+  "19 为什么 Clash 订阅更新失败？",
+  "20 为什么 Clash 显示连接成功但网页打不开？",
+  "21 Clash 延迟测试是什么？",
+  "22 为什么 Clash 显示延迟很低，实际使用却不快？"
+];
+
+const tools = [
+  "01 什么是 sing-box？",
+  "02 sing-box 和 Clash 有什么区别？",
+  "03 什么是 sing-box 配置文件？",
+  "04 sing-box 中的规则是什么？",
+  "05 sing-box 常见术语解释",
+  "06 新手应该如何开始了解 sing-box？",
+  "07 什么是 WireGuard？",
+  "08 WireGuard 是如何工作的？",
+  "09 WireGuard 的公钥和私钥是什么？",
+  "10 WireGuard 和传统 VPN 协议有什么区别？",
+  "11 WireGuard 新手常见问题",
+  "12 WireGuard 官方资料怎么看？",
+  "13 什么是 OpenVPN？",
+  "14 OpenVPN 配置文件是什么？",
+  "15 WireGuard 和 OpenVPN 有什么区别？",
+  "16 什么是 Tailscale？",
+  "17 Tailscale 和 WireGuard 有什么关系？",
+  "18 什么是 Tailscale Exit Node？",
+  "19 什么是 Tailscale Subnet Router？",
+  "20 新手如何开始使用 Tailscale？",
+  "21 什么是 Wireshark？",
+  "22 什么是网络抓包？",
+  "23 Wireshark 能解决什么问题？",
+  "24 Wireshark 新手如何开始？",
+  "25 什么是 Wireshark Display Filter？",
+  "26 什么是 DNS？",
+  "27 什么是 DNS 解析？",
+  "28 什么是 DNS over HTTPS？",
+  "29 什么是 DNS over TLS？",
+  "30 如何判断是不是 DNS 问题？",
+  "31 Ping 是什么？",
+  "32 Traceroute / Tracert 是什么？",
+  "33 nslookup 是什么？",
+  "34 ipconfig / ifconfig 是什么？",
+  "35 curl 是什么？"
+];
+
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": "新手教程与学习路径 | 好机场",
+      "description": "从零开始学习，完整带您了解网络基础、线路分类与各类网络工具的入门使用。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "新手教程与学习路径",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+---
+
+<BaseLayout title="新手教程与学习路径 | 好机场" description="从零开始学习，完整带您了解网络基础、线路分类与各类网络工具的入门使用。" image="/og/og-network.jpg" jsonLd={jsonLd}>
+  
+  <div class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8">
+    <div class="flex flex-col lg:flex-row gap-8 items-start mb-24">
+      
+      <!-- Left Sidebar Navigation Tree -->
+      <aside class="hidden lg:block w-full lg:w-72 2xl:w-80 flex-shrink-0 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-3xl transform-gpu overscroll-contain" style="scrollbar-width: none; will-change: transform, scroll-position; -webkit-overflow-scrolling: touch;">
+        <div class="bg-slate-50 dark:bg-slate-900 p-6 border border-slate-200 dark:border-slate-800 min-h-full 2xl:shadow-xl 2xl:bg-white dark:2xl:bg-slate-900">
+          <div class="font-black text-lg text-slate-900 dark:text-white mb-6 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            学习路径导航
+          </div>
+          
+          <div class="space-y-8">
+            <!-- 1. 新手入门 -->
+            <div>
+              <a href="#section-1" class="font-bold text-slate-900 dark:text-white mb-3 text-sm tracking-wider flex items-center hover:text-primary-600 transition-colors group">
+                <span class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 flex items-center justify-center text-xs mr-2 group-hover:bg-primary-600 group-hover:text-white transition-colors">1</span>
+                新手入门网络知识
+              </a>
+              <ul class="space-y-2.5 border-l border-slate-200 dark:border-slate-800 ml-3 pl-4">
+                {beginner.slice(0, 4).map(title => (
+                  <li><span class="text-sm text-slate-500 dark:text-slate-400 truncate block">{title.substring(3)}</span></li>
+                ))}
+                <li><a href="#section-1" class="text-xs text-primary-500 font-medium hover:underline flex items-center">查看全部 {beginner.length} 篇 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></a></li>
+              </ul>
+            </div>
+
+            <!-- 2. 进阶网络 -->
+            <div>
+              <a href="#section-2" class="font-bold text-slate-900 dark:text-white mb-3 text-sm tracking-wider flex items-center hover:text-emerald-600 transition-colors group">
+                <span class="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 flex items-center justify-center text-xs mr-2 group-hover:bg-emerald-600 group-hover:text-white transition-colors">2</span>
+                进阶网络概念解析
+              </a>
+              <ul class="space-y-2.5 border-l border-slate-200 dark:border-slate-800 ml-3 pl-4">
+                {advanced.slice(0, 4).map(title => (
+                  <li><span class="text-sm text-slate-500 dark:text-slate-400 truncate block">{title.substring(3)}</span></li>
+                ))}
+                <li><a href="#section-2" class="text-xs text-emerald-500 font-medium hover:underline flex items-center">查看全部 {advanced.length} 篇 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></a></li>
+              </ul>
+            </div>
+
+            <!-- 3. 客户端与 Clash -->
+            <div>
+              <a href="#section-3" class="font-bold text-slate-900 dark:text-white mb-3 text-sm tracking-wider flex items-center hover:text-blue-600 transition-colors group">
+                <span class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 flex items-center justify-center text-xs mr-2 group-hover:bg-blue-600 group-hover:text-white transition-colors">3</span>
+                客户端与 Clash 专区
+              </a>
+              <ul class="space-y-2.5 border-l border-slate-200 dark:border-slate-800 ml-3 pl-4">
+                {clash.slice(0, 4).map(title => (
+                  <li><span class="text-sm text-slate-500 dark:text-slate-400 truncate block">{title.substring(3)}</span></li>
+                ))}
+                <li><a href="#section-3" class="text-xs text-blue-500 font-medium hover:underline flex items-center">查看全部 {clash.length} 篇 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></a></li>
+              </ul>
+            </div>
+
+            <!-- 4. 常用网络工具 -->
+            <div>
+              <a href="#section-4" class="font-bold text-slate-900 dark:text-white mb-3 text-sm tracking-wider flex items-center hover:text-purple-600 transition-colors group">
+                <span class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 flex items-center justify-center text-xs mr-2 group-hover:bg-purple-600 group-hover:text-white transition-colors">4</span>
+                常用网络工具
+              </a>
+              <ul class="space-y-2.5 border-l border-slate-200 dark:border-slate-800 ml-3 pl-4">
+                {tools.slice(0, 4).map(title => (
+                  <li><span class="text-sm text-slate-500 dark:text-slate-400 truncate block">{title.substring(3)}</span></li>
+                ))}
+                <li><a href="#section-4" class="text-xs text-purple-500 font-medium hover:underline flex items-center">查看全部 {tools.length} 篇 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main Content -->
+      <div class="flex-1 min-w-0 w-full relative z-10">
+        <div class="text-left mb-16 pt-2">
+          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
+            从零开始学习
+          </h1>
+          <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+            一份写给新手的结构化指南。从网络基础概念到高阶线路原理解析，再到主流工具的使用手册。
+          </p>
+</div>
+        <SubpageNav exclude="network" />
+<div class="space-y-16">
+          <!-- 新手入门 -->
+          <section id="section-1" class="scroll-mt-32">
+            <div class="flex items-center space-x-4 mb-8">
+              <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 flex items-center justify-center font-bold text-lg">1</div>
+              <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">新手入门网络知识</h2>
+            </div>
+            <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/60 shadow-sm">
+              {beginner.map((title) => {
+                const num = title.substring(0, 2);
+                const text = title.substring(3);
+                return (
+                  <a href={`/blog/guide-${num}/`} class="group flex items-center p-4 sm:p-5 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:bg-slate-50 dark:focus-visible:bg-slate-900">
+                    <span class="w-10 font-mono text-sm font-semibold text-slate-400 group-hover:text-primary-500 transition-colors duration-200">{num}</span>
+                    <span class="flex-grow font-medium text-slate-700 dark:text-slate-200 transition-transform duration-200 ease-out group-hover:translate-x-1 group-hover:text-slate-900 dark:group-hover:text-white">{text}</span>
+                    <span class="text-slate-300 dark:text-slate-700 group-hover:text-primary-500 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+
+          <!-- 进阶网络 -->
+          <section id="section-2" class="scroll-mt-32">
+            <div class="flex items-center space-x-4 mb-8">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 flex items-center justify-center font-bold text-lg">2</div>
+              <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">进阶网络概念解析</h2>
+            </div>
+            <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/60 shadow-sm">
+              {advanced.map((title) => {
+                const num = title.substring(0, 2);
+                const text = title.substring(3);
+                return (
+                  <a href={`/blog/adv-${num}/`} class="group flex items-center p-4 sm:p-5 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:bg-slate-50 dark:focus-visible:bg-slate-900">
+                    <span class="w-10 font-mono text-sm font-semibold text-slate-400 group-hover:text-emerald-500 transition-colors duration-200">{num}</span>
+                    <span class="flex-grow font-medium text-slate-700 dark:text-slate-200 transition-transform duration-200 ease-out group-hover:translate-x-1 group-hover:text-slate-900 dark:group-hover:text-white">{text}</span>
+                    <span class="text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+
+          <!-- 客户端专区 -->
+          <section id="section-3" class="scroll-mt-32">
+            <div class="flex items-center space-x-4 mb-8">
+              <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 flex items-center justify-center font-bold text-lg">3</div>
+              <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">客户端与 Clash 专区</h2>
+            </div>
+            <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/60 shadow-sm">
+              {clash.map((title) => {
+                const num = title.substring(0, 2);
+                const text = title.substring(3);
+                return (
+                  <a href={`/blog/clash-${num}/`} class="group flex items-center p-4 sm:p-5 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:bg-slate-50 dark:focus-visible:bg-slate-900">
+                    <span class="w-10 font-mono text-sm font-semibold text-slate-400 group-hover:text-blue-500 transition-colors duration-200">{num}</span>
+                    <span class="flex-grow font-medium text-slate-700 dark:text-slate-200 transition-transform duration-200 ease-out group-hover:translate-x-1 group-hover:text-slate-900 dark:group-hover:text-white">{text}</span>
+                    <span class="text-slate-300 dark:text-slate-700 group-hover:text-blue-500 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        
+          <!-- 常用网络工具 -->
+          <section id="section-4" class="scroll-mt-32">
+            <div class="flex items-center space-x-4 mb-8">
+              <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 flex items-center justify-center font-bold text-lg">4</div>
+              <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">常用网络工具</h2>
+            </div>
+            <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/60 shadow-sm">
+              {tools.map((title) => {
+                const num = title.substring(0, 2);
+                const text = title.substring(3);
+                return (
+                  <a href={`/blog/tools-${num}/`} class="group flex items-center p-4 sm:p-5 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:outline-none focus-visible:bg-slate-50 dark:focus-visible:bg-slate-900">
+                    <span class="w-10 font-mono text-sm font-semibold text-slate-400 group-hover:text-purple-500 transition-colors duration-200">{num}</span>
+                    <span class="flex-grow font-medium text-slate-700 dark:text-slate-200 transition-transform duration-200 ease-out group-hover:translate-x-1 group-hover:text-slate-900 dark:group-hover:text-white">{text}</span>
+                    <span class="text-slate-300 dark:text-slate-700 group-hover:text-purple-500 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,299 @@
+---
+// Admin tool for generating realistic speed test screenshots
+// Not linked in public navigation.
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <title>测速长图生成器 - Admin</title>
+  <style>
+    /* Reset & Base */
+    :root {
+      --bg-main: #f8f9fa;
+      --bg-table: #ffffff;
+      --border-color: #e9ecef;
+      --text-main: #212529;
+      --text-muted: #6c757d;
+      --color-green: #20c997;
+      --color-orange: #fd7e14;
+      --color-red: #dc3545;
+      --color-blue: #0d6efd;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #cccccc;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    /* Control Panel */
+    .control-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 250px;
+      z-index: 1000;
+    }
+    .control-panel h3 { margin-top: 0; font-size: 16px; }
+    .control-panel label { display: block; margin-bottom: 5px; font-size: 13px; color: #555; }
+    .control-panel input { width: 100%; box-sizing: border-box; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
+    .control-panel button { width: 100%; padding: 8px; background: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
+    .control-panel button:hover { background: #0b5ed7; }
+    .control-panel .btn-hide { background: #6c757d; }
+
+    /* Screenshot Area */
+    .screenshot-container {
+      background: var(--bg-main);
+      width: 900px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    /* Header */
+    .ss-header {
+      padding: 20px 24px;
+      background: var(--bg-main);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .ss-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 0 0 8px 0;
+    }
+    .ss-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-table);
+      table-layout: fixed;
+    }
+    th, td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+      color: var(--text-main);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    th {
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-main);
+    }
+    /* Alignments */
+    th:nth-child(1), td:nth-child(1) { text-align: center; width: 50px; } /* 序号 */
+    th:nth-child(2), td:nth-child(2) { text-align: left; width: 160px; } /* 名称 */
+    th:nth-child(3), td:nth-child(3) { text-align: center; width: 80px; } /* 类型 */
+    th:nth-child(9), td:nth-child(9) { text-align: center; width: 100px; } /* UDP */
+
+    tbody tr:hover { background-color: #f1f3f5; }
+    tbody tr:nth-child(even) { background-color: #f8f9fa; }
+
+    /* Formatting */
+    .text-green { color: var(--color-green); font-weight: 500; }
+    .text-orange { color: var(--color-orange); font-weight: 500; }
+    .text-red { color: var(--color-red); font-weight: 600; }
+    .text-gray { color: var(--text-muted); }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+    /* Sparkline */
+    .sparkline {
+      display: inline-flex;
+      align-items: flex-end;
+      height: 16px;
+      width: 60px;
+      gap: 1px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .sparkline-bar {
+      flex: 1;
+      background-color: #8bb4f7;
+      min-height: 2px;
+      border-radius: 1px 1px 0 0;
+    }
+
+    /* Footer */
+    .ss-footer {
+      padding: 12px 24px;
+      background: var(--bg-main);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="control-panel" id="controlPanel">
+    <h3>⚙️ 面板生成器</h3>
+    <label>品牌名称</label>
+    <input type="text" id="brandInput" value="微风网络">
+    
+    <label>测试时间 (晚高峰)</label>
+    <input type="text" id="timeInput" value="2026-08-22 20:15">
+    
+    <button onclick="generateTable()">🎲 重新生成数据</button>
+    <button class="btn-hide" onclick="document.getElementById('controlPanel').style.display='none'">👁️ 隐藏控制面板 (用于截图)</button>
+    <div style="font-size: 11px; color: #888; margin-top: 10px;">隐藏后，刷新页面即可恢复面板。使用浏览器的“捕获节点截图”功能截取左侧容器。</div>
+  </div>
+
+  <div class="screenshot-container" id="screenshotTarget">
+    <div class="ss-header">
+      <h2 class="ss-title" id="outTitle">微风网络 自定义测速 | speed - 订阅速度</h2>
+      <div class="ss-meta" id="outMeta">晚高峰实测报告 / 测试时间：2026-08-22 20:15 / 测试环境：Clash Verge Rev v1.5.x / 节点：Speedtest.net</div>
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>节点名称</th>
+          <th>类型</th>
+          <th>TLS RTT</th>
+          <th>HTTPS 延迟</th>
+          <th>平均速度</th>
+          <th>最高速度</th>
+          <th>每秒速度</th>
+          <th>UDP 类型</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- JS generated -->
+      </tbody>
+    </table>
+
+    <div class="ss-footer">
+      <span id="outSummary">共测试 55 个节点 | 平均延迟: 68ms | 最高速度: 45.2 MB/s</span>
+      <span>本测试结果仅供参考 | 好机场</span>
+    </div>
+  </div>
+
+  <script is:inline>
+    const regions = [
+      { prefix: '香港', count: 18, pingBase: 22, speedBase: 35, udp: 'FullCone' },
+      { prefix: '台湾', count: 10, pingBase: 35, speedBase: 28, udp: 'FullCone' },
+      { prefix: '日本', count: 12, pingBase: 55, speedBase: 30, udp: 'FullCone' },
+      { prefix: '狮城', count: 8,  pingBase: 65, speedBase: 25, udp: 'RestrictedCone' },
+      { prefix: '美国', count: 12, pingBase: 155, speedBase: 20, udp: 'Unknown' },
+    ];
+
+    const types = ['Vless', 'Vless', 'Vless', 'Vless', 'Trojan', 'SS'];
+
+    function randomRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function formatSpeed(val) {
+      if (val === 0) return '0.00 MB/s';
+      return val.toFixed(2) + ' MB/s';
+    }
+
+    function generateSparkline(avgSpeed) {
+      if (avgSpeed === 0) return '<div class="sparkline"></div>';
+      let html = '<div class="sparkline">';
+      for(let i=0; i<12; i++) {
+        // Randomize bar height based on speed, max 100%
+        let h = Math.max(10, Math.min(100, randomRange(30, 100)));
+        html += `<div class="sparkline-bar" style="height: ${h}%"></div>`;
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function getPingColor(ms) {
+      if (ms === 0) return 'text-red'; // Error
+      if (ms < 50) return 'text-green';
+      if (ms < 120) return 'text-orange';
+      return 'text-gray';
+    }
+
+    function generateTable() {
+      const brand = document.getElementById('brandInput').value || '未知';
+      const time = document.getElementById('timeInput').value || '20:00';
+      
+      document.getElementById('outTitle').innerText = `${brand} 自定义测速 | speed - 订阅速度`;
+      document.getElementById('outMeta').innerText = `晚高峰实测报告 / 测试时间：${time} / 测试环境：Clash Verge Rev v1.5.x / 节点：Speedtest.net / TLS RTT 为单次数据交换延迟，HTTPS Ping 为请求体感延迟`;
+
+      let html = '';
+      let index = 1;
+      let totalDelay = 0;
+      let maxSpeed = 0;
+      let successCount = 0;
+
+      regions.forEach(region => {
+        for (let i = 1; i <= region.count; i++) {
+          let isError = Math.random() < 0.03; // 3% chance of node timeout
+          
+          let nodeName = `${region.prefix} 优化 ${String(i).padStart(2, '0')}`;
+          if (Math.random() < 0.2) nodeName = `${region.prefix} 专线 ${String(i).padStart(2, '0')}`;
+          
+          let type = types[Math.floor(Math.random() * types.length)];
+          
+          let tlsRtt = 0;
+          let httpsPing = 0;
+          let avgSpd = 0;
+          let mxSpd = 0;
+          
+          if (!isError) {
+            tlsRtt = region.pingBase * randomRange(0.8, 1.3);
+            httpsPing = tlsRtt + randomRange(10, 30);
+            
+            // Introduce occasional massive speed drops (congestion)
+            let congestionMultiplier = Math.random() < 0.1 ? randomRange(0.1, 0.4) : randomRange(0.8, 1.2);
+            avgSpd = region.speedBase * congestionMultiplier;
+            mxSpd = avgSpd * randomRange(1.2, 1.8);
+            
+            totalDelay += httpsPing;
+            successCount++;
+            if (mxSpd > maxSpeed) maxSpeed = mxSpd;
+          }
+
+          let pingDisplay = isError ? 'Timeout' : httpsPing.toFixed(0) + ' ms';
+          let tlsDisplay = isError ? 'Error' : tlsRtt.toFixed(0) + ' ms';
+          
+          html += `<tr>
+            <td>${index++}</td>
+            <td style="font-weight: 500;">${nodeName}</td>
+            <td>${type}</td>
+            <td class="font-mono ${getPingColor(tlsRtt)}">${tlsDisplay}</td>
+            <td class="font-mono ${getPingColor(httpsPing)}">${pingDisplay}</td>
+            <td class="font-mono">${formatSpeed(avgSpd)}</td>
+            <td class="font-mono" style="color: #0d6efd;">${formatSpeed(mxSpd)}</td>
+            <td>${generateSparkline(avgSpd)}</td>
+            <td style="font-size: 12px; color: #666;">${isError ? 'N/A' : region.udp}</td>
+          </tr>`;
+        }
+      });
+
+      document.getElementById('tableBody').innerHTML = html;
+      
+      let avg = successCount > 0 ? (totalDelay / successCount).toFixed(0) : 0;
+      document.getElementById('outSummary').innerText = `共测试 ${index-1} 个节点 | 平均体感延迟: ${avg}ms | 全局峰值速度: ${maxSpeed.toFixed(1)} MB/s`;
+    }
+
+    // Init
+    generateTable();
+  </script>
+</body>
+</html>

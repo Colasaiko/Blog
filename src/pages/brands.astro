@@ -1,0 +1,280 @@
+---
+import SubpageNav from '../components/SubpageNav.astro';
+import TrustBadge from '../components/TrustBadge.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const title = "品牌介绍与完整排行榜";
+const description = "精选优质服务商品牌评测与推荐。";
+
+// Fetch posts if we still want to show brand review articles at the bottom
+const posts = (await getCollection('blog'))
+  .filter(post => post.data.category === '品牌介绍')
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const rankings = [
+  { rank: 1, name: '微风', audience: '日常上网、流媒体爱好者', features: '全 IPLC 专线，不限制设备接入数量', platforms: 'Win / Mac / iOS / Android', slug: 'review-01-weifeng' },
+  { rank: 2, name: '飞猫', audience: '多设备重度用户', features: '最高 2.5Gbps 高速速率，原生 IP 解锁', platforms: '全平台及主流路由器', slug: 'review-02-feimao' },
+  { rank: 3, name: 'Sogo', audience: '进阶用户、企业级需求', features: '支持 VLESS 协议，企业级 IEPL 专线', platforms: 'Win / Mac / iOS / Android / OpenWrt', slug: 'review-03-sogo' },
+  { rank: 4, name: '幕光', audience: '追求极简的备用选择', features: 'BGP 多线智能调度，专线级出口架构', platforms: 'Win / Mac / iOS / Android', slug: 'review-04-muguang' },
+];
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": `${title} | 好机场`,
+      "description": description
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": new URL("/", Astro.site).href
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "品牌图鉴",
+          "item": currentUrl
+        }
+      ]
+    }
+  ]
+});
+
+const allBrands = [
+  { name: '微风网络', id: 'weifeng', url: 'https://wep01.breezenetaff.com/#/?code=bSnymFll', promo: 'weifeng90 (7折)', desc: '全IPLC专线，提供低延迟高速网络，不限制设备同时接入。' },
+  { name: '飞猫云', id: 'feimao', url: 'https://m1cfjgcx.feimaogfttt1.xyz/#/?code=UUcH5yh9', promo: '无', desc: '全IPLC专线网络，最高2.5Gbps高速，原生IP解锁各流媒体，支持多端同时登录。' },
+  { name: 'sogo云', id: 'sogo', url: 'https://asfdgd.sogotztz2.sbs/#/?code=JvxcPy2A', promo: 'lingmao (8折)', desc: '支持VLESS协议，企业级IEPL专线，晚高峰不卡且不限速，全线路流媒体解锁。' },
+  { name: '暮光加速', id: 'muguang', url: 'https://asfawsf.twilightttt.sbs/#/?code=1eGqV85O', promo: 'mm88 (8折)', desc: 'BGP多线路智能调度，专线级出口架构，套餐内不限速，支持8K快速加载。' },
+  { name: 'firefly', id: 'firefly', url: 'https://fvip02.fireflyaff.com/#/?code=mcYQUZxG', promo: 'firefly (8折)', desc: '不限速，IPLC专线网络，不限设备数。' },
+  { name: '跨界云', id: 'kuajie', url: 'https://vip02.kuajieaff.com/#/?code=HRzqSLrR', promo: 'kuajie (8折)', desc: 'IPLC高端线路，所有节点x1倍率，不限制设备登录数。' },
+  { name: '闪跃', id: 'shanyue', url: 'https://wep01.flashleapaff.com/#/?code=hCwClNUi', promo: 'shanyue (8折)', desc: '全IPLC专线，原生IP解锁各大流媒体，解锁ChatGPT/Tiktok。' },
+  { name: '无忧链接', id: 'wuyou', url: 'https://wep01.worryfreeaff.com/#/?code=ydtFVWqU', promo: '无', desc: '全IPLC专线，稳定全球AI支持，提供4K流畅观影体验。' },
+  { name: '灵猫', id: 'lingmao', url: 'https://edp01.civetaff.com/#/?code=2Ai6V6Ub', promo: 'lingmao (8折)', desc: '全IPLC专线，原生IP解锁流媒体，提供全天在线客服指导。' },
+  { name: 'BitzNet', id: 'bitznet', url: 'https://red.bnaffred.com/#/register?code=8Hqeq4XA', promo: '无', desc: '广东IEPL专线，普通国际线路，不限制本人设备数。' },
+  { name: '星岛梦', id: 'xingdao', url: 'https://jljljfois.xdmttt4.lol/#/?code=1qBePxW1', promo: 'nmw888 (9折)', desc: '全IEPL专线，原生IP，智能路由自动择优，多设备不限量。' },
+  { name: '唯兔云', id: 'weitu', url: 'https://jifdsf.v2saat.homes/#/?code=bGS5G7xn', promo: 'rabbit (8折)', desc: '全IPLC专线，支持vless协议，增加备用直连节点。' },
+  { name: '光速云', id: 'guangsu', url: 'https://v5g.gggoltt.xyz/#/?code=GKfXFvJh', promo: '无', desc: '全球IPLC单节点至高2.5Gbps高速，原生IP解锁流媒体。' },
+  { name: 'U1S1', id: 'u1s1', url: 'https://hudeiuf.u1sat.my/#/?code=T1UVuVDP', promo: 'U1S1 (85折)', desc: 'BGP三网智能优化+IEPL专线出口，全平台ss协议支持。' },
+  { name: '极连云', id: 'jilian', url: 'https://1jdhjfeeef.jilianat.homes/#/?code=3Ci2Ynmm', promo: 'JLY888 (8折)', desc: '全IPLC专线，最大2.5Gbps高速，原生IP解锁各大流媒体。' },
+  { name: '光年梯', id: 'guangnian', url: 'https://vv3dbvb.guangnianertt1.homes/#/?code=TSYmMzYm', promo: '无', desc: '全程IPLC专线，原生IP，不限制同时在线客户端数量。' },
+  { name: '一翻云', id: 'yifan', url: 'https://bbn3uyoiu.1fyohnzt.xyz/#/?code=e61goYLt', promo: '无', desc: '解锁主流流媒体及各类AI智能工具，超值特惠。' },
+  { name: '梯子云', id: 'tizi', url: 'https://asfawsf.ladderttt.sbs/#/?code=3vf6NG2u', promo: 'tiziyun (8折)', desc: '基础中转方案+多入口智能调度，套餐内不限速，全节点1x计费倍率。' },
+  { name: 'WaveNet', id: 'wavenet', url: 'https://asfawsf.wavenetttt.homes/#/?code=YPxgLl5c', promo: 'lw888 (8折)', desc: '三网智能优化+纯专线出口，超大流量池，BGP智能路由。' },
+  { name: '灵动云', id: 'lingdong', url: 'https://asfawsf.lingdongyunttt.homes/#/?code=TIMwZeIR', promo: '880223 (8折)', desc: 'BGP三网优化专线，晚高峰不卡且不限速，原生纯净IP支持。' },
+  { name: '隐形人', id: 'yinxing', url: 'https://asfweroasf.invisiblettt.homes/#/?code=8jyAXfu3', promo: 'yxr888 (8折)', desc: '云端多链路即时优化+全链路专线架构，高速响应，节点1x计费倍率。' }
+];
+---
+
+<BaseLayout title={`${title} | 好机场`} description={description} image="/og/og-brands.jpg">
+  
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:flex lg:gap-12 relative">
+  <!-- 侧边栏目录 -->
+  <aside class="hidden lg:block lg:w-64 flex-shrink-0">
+    <div class="sticky top-28 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+      <div class="text-lg font-bold text-slate-900 dark:text-white mb-4">目录导览</div>
+      <nav class="space-y-1 toc-nav">
+        <a href="#featured" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-primary-600 hover:bg-white dark:text-slate-400 dark:hover:text-primary-400 dark:hover:bg-slate-800 transition-colors">编辑精选推荐</a>
+        <a href="#downloads" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-primary-600 hover:bg-white dark:text-slate-400 dark:hover:text-primary-400 dark:hover:bg-slate-800 transition-colors">客户端下载</a>
+        <a href="#all-brands" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-primary-600 hover:bg-white dark:text-slate-400 dark:hover:text-primary-400 dark:hover:bg-slate-800 transition-colors">完整品牌名录</a>
+        <a href="#reviews" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-primary-600 hover:bg-white dark:text-slate-400 dark:hover:text-primary-400 dark:hover:bg-slate-800 transition-colors">品牌深度评测</a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- 主体内容 -->
+  <div class="flex-1 max-w-5xl min-w-0">
+
+    <header class="mb-16 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">{title}</h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">
+        {description}
+      </p>
+<div class="max-w-3xl mx-auto p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-800 text-sm text-slate-500 dark:text-slate-400 text-left leading-relaxed">
+        <strong>利益相关说明：</strong>部分品牌链接可能包含推广或联盟（Affiliate）参数。如果您通过这些链接访问或注册，本站可能会获得相应的推广收益以维持运营。排行榜和文章内容均基于公开信息整理，不应因此被理解为对其实际服务表现的绝对保证。请根据自身需求理性选择。
+      </div>
+    </header>
+
+    <!-- Editor's Recommendation -->
+        <SubpageNav exclude="brands" />
+<section class="mb-20">
+      <div class="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/80 dark:to-slate-950 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+          <svg class="w-64 h-64 text-primary-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        </div>
+        
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center relative z-10">
+          <svg class="w-8 h-8 text-primary-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+          编辑推荐排行榜
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10">
+          {rankings.map((brand) => (
+            <div class="group flex flex-col p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="text-4xl font-black text-slate-300 dark:text-slate-600 mb-2 font-mono transition-colors group-hover:text-primary-200 dark:group-hover:text-primary-800/60">
+                {String(brand.rank).padStart(2, '0')}
+              </div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white mb-5">{brand.name}</div>
+              
+              <div class="space-y-4 flex-grow text-sm">
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">适合人群</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200">{brand.audience}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">服务特点</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200 leading-snug block">{brand.features}</span>
+                </div>
+                <div>
+                  <span class="text-slate-500 dark:text-slate-400 block mb-1 text-xs">平台支持</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200 leading-snug block">{brand.platforms}</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/60">
+                <a href={`/blog/${brand.slug}/`} class="inline-flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                  查看品牌介绍
+                  <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Client Download Tutorials Banner -->
+    <section id="downloads" class="mb-20 pt-8">
+      <div class="bg-gradient-to-r from-primary-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800/50 border border-primary-100 dark:border-slate-700 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">需要下载客户端？</h2>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">我们为你准备了针对 Mac 与 iOS 设备的保姆级图文安装教程，无缝衔接你的专属节点。</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          <a href="/blog/client-download-mac/" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-300 dark:hover:border-primary-700 transition-all shadow-sm">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            Mac 下载与安装教程
+          </a>
+          <a href="/blog/client-download-ios/" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-300 dark:hover:border-primary-700 transition-all shadow-sm">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            iOS 下载与安装教程
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Complete Brand List -->
+    <section id="all-brands" class="mb-20 pt-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">完整品牌名录</h2>
+        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold rounded-full">共收录 {allBrands.length} 家</span>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {allBrands.map((brand, index) => (
+          <div class="group flex flex-col p-6 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl transition-all duration-300 ease-out hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md hover:-translate-y-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                {brand.name}
+              </div>
+              {brand.promo !== '无' && brand.promo !== '暂无优惠' ? (
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                  优惠: {brand.promo}
+                </span>
+              ) : null}
+            </div>
+            
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
+              {brand.desc}
+            </p>
+            
+            <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
+              <a href={`/blog/review-${String(index + 1).padStart(2, "0")}-${brand.id}/`} class="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors focus-visible:outline-none focus-visible:underline">
+                阅读测评
+              </a>
+              <a href={brand.url} target="_blank" rel="sponsored nofollow noopener noreferrer" class="inline-flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors focus-visible:outline-none focus-visible:underline">
+                前往官网
+                <span class="ml-1 transition-transform duration-200 ease-out group-hover:translate-x-1">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Brand Review Articles -->
+    <section id="reviews" class="pt-8">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">品牌深度评测</h2>
+      </div>
+      
+      {posts.length > 0 ? (
+        <div class="divide-y divide-slate-100 dark:divide-slate-800/60 border-y border-slate-100 dark:border-slate-800/60">
+          {posts.map((post, index) => (
+            <a href={`/blog/${post.slug}/`} class={`group block py-6 sm:py-8 px-4 -mx-4 sm:mx-0 sm:px-6 transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-2xl sm:rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 motion-reduce:transition-none`}>
+              <div class="flex flex-col sm:flex-row sm:items-baseline gap-2 mb-2 sm:mb-3">
+                <span class="inline-block text-xs font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                  {post.data.category}
+                </span>
+              </div>
+              <div class="flex items-start justify-between">
+                <div class="pr-8">
+                  <div class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3 transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                    {post.data.title}
+                  </div>
+                  <p class="text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                    {post.data.description}
+                  </p>
+                </div>
+                <span class="mt-2 text-slate-300 dark:text-slate-600 group-hover:text-primary-500 transition-all duration-200 ease-out group-hover:translate-x-1 flex-shrink-0 motion-reduce:transition-none motion-reduce:hover:transform-none">
+                  &rarr;
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-20 text-slate-500 border border-slate-100 dark:border-slate-800 rounded-2xl">
+          <p>暂无品牌评测文章，敬请期待！</p>
+        </div>
+      )}
+    </section>
+  </div>
+  </div>
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('section[id], div[id="featured"]');
+    const navLinks = document.querySelectorAll('.toc-nav a');
+
+    const observer = new IntersectionObserver((entries) => {
+      let currentId = '';
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          currentId = entry.target.getAttribute('id');
+        }
+      });
+      
+      if (currentId) {
+        navLinks.forEach(link => {
+          link.classList.remove('bg-white', 'dark:bg-slate-800', 'text-primary-600', 'dark:text-primary-400', 'font-bold', 'shadow-sm');
+          if (link.getAttribute('href') === '#' + currentId) {
+            link.classList.add('bg-white', 'dark:bg-slate-800', 'text-primary-600', 'dark:text-primary-400', 'font-bold', 'shadow-sm');
+          }
+        });
+      }
+    }, { rootMargin: '-10% 0px -80% 0px' });
+
+    sections.forEach(section => observer.observe(section));
+  });
+</script>
+
+</BaseLayout>

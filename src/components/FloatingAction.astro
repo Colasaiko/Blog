@@ -1,0 +1,66 @@
+---
+// src/components/FloatingAction.astro
+// Check if we are in a sub-page (e.g. /blog/article-name) instead of a top-level menu page
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const isDetailPage = segments.length > 1;
+---
+
+{isDetailPage && (
+  <div class="fixed bottom-24 lg:bottom-28 right-6 lg:right-10 z-50 flex flex-col space-y-3">
+    
+    <!-- 返回上一页 (Back) -->
+    <button 
+      id="fab-back"
+      class="w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-primary-600 dark:hover:text-primary-400 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 group"
+      aria-label="返回"
+      title="返回"
+    >
+      <svg class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+
+    <!-- 回到顶部 (Top) -->
+    <button 
+      id="fab-top"
+      class="w-11 h-11 sm:w-12 sm:h-12 bg-primary-600 text-white rounded-full shadow-lg border border-primary-500 flex items-center justify-center transition-all duration-300 hover:bg-primary-700 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 group opacity-0 translate-y-4 pointer-events-none"
+      aria-label="回到顶部"
+      title="回到顶部"
+    >
+      <svg class="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+  </div>
+)}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Back button logic
+    const fabBack = document.getElementById('fab-back');
+    if (fabBack) {
+      fabBack.addEventListener('click', () => {
+        if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+          window.history.back();
+        } else {
+          window.location.href = '/';
+        }
+      });
+    }
+
+    // Scroll to top logic
+    const fabTop = document.getElementById('fab-top');
+    if (fabTop) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          fabTop.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+          fabTop.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          fabTop.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+          fabTop.classList.remove('opacity-100', 'translate-y-0');
+        }
+      }, { passive: true });
+
+      fabTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  });
+</script>

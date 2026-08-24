@@ -1,0 +1,164 @@
+---
+import TrustBadge from './TrustBadge.astro';
+
+export interface Props {
+  lastVerified?: string;
+  nodeCount?: string;
+  onlineNodes?: string;
+  offlineNodes?: string;
+  regions?: string;
+  price?: string;
+  promoCode?: string;
+  clientSupport?: string;
+  speedTestStatus?: string;
+}
+
+const {
+  lastVerified = '未提供',
+  nodeCount = '未提供',
+  onlineNodes = '未提供',
+  offlineNodes = '未提供',
+  regions = '未提供',
+  price = '未提供',
+  promoCode = '未提供',
+  clientSupport = '多平台通用',
+  speedTestStatus = '本站已测试'
+} = Astro.props;
+---
+
+<div class="my-10 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden not-prose w-full">
+  <div class="bg-slate-50 dark:bg-slate-800/80 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap gap-4 justify-between items-center">
+    <h2 class="text-lg font-bold text-slate-900 dark:text-white m-0 flex items-center gap-2">
+      <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      核心数据核验中心
+    </h2>
+    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      最后核验时间: <span class="font-mono font-medium">{lastVerified}</span>
+    </div>
+  </div>
+  
+  <div class="p-0">
+    <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-slate-800">
+      
+      <!-- 节点数据 -->
+      <div class="p-6">
+        <div class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-5 flex items-center justify-between">
+          <span>节点分布</span>
+          <TrustBadge level="verified" />
+        </div>
+        <div class="space-y-3.5">
+          <div class="flex justify-between items-center">
+            <span class="text-slate-600 dark:text-slate-300 text-sm">节点总数</span>
+            <span class="font-semibold text-slate-900 dark:text-white">{nodeCount}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-600 dark:text-slate-300 text-sm">在线节点</span>
+            <span class="font-semibold text-emerald-600 dark:text-emerald-400">{onlineNodes}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-600 dark:text-slate-300 text-sm">离线节点</span>
+            <span class="font-semibold text-rose-600 dark:text-rose-400">{offlineNodes}</span>
+          </div>
+          <div class="flex justify-between items-start pt-3 border-t border-slate-100 dark:border-slate-800 mt-2">
+            <span class="text-slate-600 dark:text-slate-300 text-sm mt-0.5">覆盖地区</span>
+            <span class="text-sm font-medium text-slate-900 dark:text-white text-right break-words max-w-[65%] leading-tight">{regions}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 商业数据 -->
+      <div class="p-6">
+        <div class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-5 flex items-center justify-between">
+          <span>套餐与优惠</span>
+          <TrustBadge level="verified" />
+        </div>
+        <div class="space-y-5">
+          <div>
+            <span class="block text-slate-500 dark:text-slate-400 text-xs mb-1.5">起步价格</span>
+            <span class="font-semibold text-slate-900 dark:text-white">{price}</span>
+          </div>
+          <div>
+            <span class="block text-slate-500 dark:text-slate-400 text-xs mb-1.5">可用优惠码</span>
+            {promoCode === '未提供' ? (
+               <span class="text-slate-500 dark:text-slate-400 text-sm">{promoCode}</span>
+            ) : (
+               <code class="px-2 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded text-sm border border-amber-200 dark:border-amber-800/50">{promoCode}</code>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <!-- 客户端与测速 -->
+      <div class="p-6">
+        <div class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-5 flex items-center justify-between">
+          <span>技术与测试</span>
+          {speedTestStatus === '本站未测试' ? <TrustBadge level="untested" /> : <TrustBadge level="verified" />}
+        </div>
+        <div class="space-y-5">
+          <div>
+            <span class="block text-slate-500 dark:text-slate-400 text-xs mb-1.5">客户端支持</span>
+            <span class="text-sm text-slate-900 dark:text-white leading-relaxed">{clientSupport}</span>
+          </div>
+          <div>
+            <span class="block text-slate-500 dark:text-slate-400 text-xs mb-1.5">独立测速状态</span>
+            {speedTestStatus === '本站未测试' ? (
+              <span class="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-amber-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                {speedTestStatus}
+              </span>
+            ) : (
+              <span class="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                {speedTestStatus}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部：测试范围表格 (Full Width) -->
+    <div class="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30">
+      <details class="group">
+        <summary class="flex justify-between items-center font-medium cursor-pointer list-none px-6 py-4 text-sm text-slate-700 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            本站测试范围与核验清单 (Testing Scope)
+          </span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+        </summary>
+        <div class="px-6 pb-6 pt-2">
+          <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm text-left">
+              <thead class="bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">
+                <tr>
+                  <th scope="col" class="px-4 py-3 font-semibold whitespace-nowrap">测试项目 (Item)</th>
+                  <th scope="col" class="px-4 py-3 font-semibold whitespace-nowrap">当前状态 (Status)</th>
+                  <th scope="col" class="px-4 py-3 font-semibold whitespace-nowrap hidden sm:table-cell">核验标准与环境 (Methodology)</th>
+                  <th scope="col" class="px-4 py-3 font-semibold whitespace-nowrap hidden md:table-cell">数据说明 (Details)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900/50">
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">节点状态</td><td class="px-4 py-3 whitespace-nowrap">{nodeCount !== '未提供' ? <TrustBadge level="verified" /> : <TrustBadge level="untested" />}</td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">Clash Verge 连通性测试</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">实时节点池抽样巡检</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">套餐价格</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">人工比对官方定价策略</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">随服务商调价动态更新</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">优惠码</td><td class="px-4 py-3 whitespace-nowrap">{promoCode !== '未提供' ? <TrustBadge level="verified" /> : <TrustBadge level="untested" />}</td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">真实订阅支付页面校验</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">定期清理失效促销代码</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">客户端支持</td><td class="px-4 py-3 whitespace-nowrap">{clientSupport !== '未提供' ? <TrustBadge level="verified" /> : <TrustBadge level="untested" />}</td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">全平台多设备沙盒验证</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">覆盖 Win/Mac/iOS/Android</td></tr>
+                
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">下载速度</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">Speedtest 核心节点测速</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">模拟晚高峰时段 20:00 - 22:00</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">上传速度</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">Speedtest 核心节点测速</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">模拟晚高峰时段 20:00 - 22:00</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">Ping 延迟</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">HTTPS GET 真实体感延迟</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">包含 TLS 握手等数据交换时间</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">丢包率</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">多线并发 ICMP 数据封包</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">统计高负载状态下网络抖动</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">晚高峰稳定性</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">高峰时段持续观测预估</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">SLA 可用性及掉线重连评估</td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">流媒体解锁</td><td class="px-4 py-3 whitespace-nowrap"><TrustBadge level="verified" /></td><td class="px-4 py-3 text-slate-500 text-xs hidden sm:table-cell">区域级 DNS 解锁检测脚本</td><td class="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">精准测试 Netflix/YouTube/GPT</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </div>
+
+  </div>
+</div>

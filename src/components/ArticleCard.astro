@@ -1,0 +1,64 @@
+---
+import { formatDate } from '../utils/formatDate';
+import { readingTime } from '../utils/readingTime';
+
+export interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  slug: string;
+  category: string;
+  content: string; // Used to calculate reading time
+  coverImage?: string;
+  video?: string;
+}
+
+const { title, description, pubDate, updatedDate, slug, category, content, coverImage, video } = Astro.props;
+const readTime = readingTime(content);
+const displayDate = updatedDate ? updatedDate : pubDate;
+---
+
+<a href={`/blog/${slug}/`} class="group flex flex-col relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
+  {coverImage && (
+    <div class="aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900 relative flex-shrink-0">
+      <img src={coverImage} alt={title} width="1600" height="900" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+      {video && (
+        <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+          <div class="w-12 h-12 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6 text-primary-600 dark:text-primary-400 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+  
+  <div class="p-6 flex flex-col flex-grow relative">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-4">
+      <span class="text-primary-600 dark:text-primary-400 font-semibold px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 rounded-full">{category}</span>
+      
+      <span class="recently-read-badge hidden text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center shadow-sm border border-emerald-200 dark:border-emerald-800/50">
+        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        刚阅读此内容
+      </span>
+
+      <time datetime={displayDate.toISOString()}>
+        {updatedDate ? `最后更新 ${formatDate(displayDate)}` : formatDate(displayDate)}
+      </time>
+      <span>&middot;</span>
+      <span>{readTime}</span>
+    </div>
+    
+    <div class="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2">
+      {title}
+    </div>
+    
+    <p class="text-slate-600 dark:text-slate-400 line-clamp-3 text-sm leading-relaxed flex-grow">
+      {description}
+    </p>
+    
+    <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-end text-xs font-bold text-slate-400 group-hover:text-primary-500 transition-colors">
+      阅读全文 <span class="ml-1 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+    </div>
+  </div>
+</a>
