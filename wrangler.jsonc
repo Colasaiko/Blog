@@ -2,6 +2,7 @@
   "name": "bestjichang-blog",
   "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2024-04-01",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"
