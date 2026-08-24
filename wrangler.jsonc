@@ -1,6 +1,11 @@
 {
   "name": "bestjichang-blog",
+  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2024-04-01",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
   "d1_databases": [
     {
       "binding": "DB",
