@@ -188,7 +188,7 @@ export async function DELETE({ request, locals }) {
   try {
     const db = locals.runtime.env.DB;
     const data = await request.json();
-    const ADMIN_PASS = import.meta.env.ADMIN_PASS || process.env.ADMIN_PASS; 
+    const ADMIN_PASS = locals.runtime.env.ADMIN_PASS;
     if (data.password !== ADMIN_PASS) {
       return new Response(JSON.stringify({ error: '授权失败' }), { 
         status: 401,
