@@ -1,13 +1,15 @@
 <div align="center">
 
-# 🌐 好机场博客
+# 🌐 好机场博客 (BestJichang.com)
 
-> **机场推荐 · 网络工具 · AI · Clash · VPS · 网络知识**
+**本项目为 [BestJichang.com](https://bestjichang.com/) 的官方开源网站源码。**
 
-一个专注于机场评测、网络工具、AI 服务与网络知识的内容平台。
-提供机场推荐、网络工具介绍、Clash 教程、VPS 指南、AI 工具资讯、软件介绍以及各种网络使用教程。
+> **机场推荐 · 网络工具 · VPN/代理 · AI · Clash · VPS · 网络知识**
 
-🌐 官网：[https://bestjichang.com](https://bestjichang.com)
+BestJichang.com 是一个专注于机场评测、跨境网络工具、AI 服务与网络知识的现代化内容平台。
+提供最新的机场推荐、网络工具介绍、Clash 教程、VPS 指南、AI 工具资讯、软件介绍以及各种网络使用教程。
+
+🌐 官方网站：[https://bestjichang.com/](https://bestjichang.com/)
 
 [![Astro](https://img.shields.io/badge/Astro-4.14.2-ff5a03?style=flat-square&logo=astro&logoColor=white)](https://astro.build/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
