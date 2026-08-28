@@ -393,7 +393,7 @@ npm run build
 每一篇沉淀的技术博客均使用最极客的 `Markdown` 以及在支持扩展 JSX 语法的 `MDX` 原生格式，实现了排版的清晰、跨平台迁移的高容错以及内嵌交互组件的强扩展性。
 
 ### 网站目前是否全面开源？
-当前代码库暂无明确的广泛共享开源协议许可。 License information has not been specified yet.
+本项目源码仅供查看与学习参考。未提供任何标准开源协议（No License），未经事先书面许可，不得复制、修改或重新部署本站源码以用于商业或非商业用途。
 
 ### 我可以 Clone 下来自己部署一套吗？
 在准备完毕相应的 Cloudflare 个人账号及 D1 数据库额度后，仅需要修改 `wrangler.jsonc` 对应绑定并在环境变量区写入必要的本地 Secret，即可依托项目内部完善的配置文件利用 Wrangler 实现部署。
@@ -433,4 +433,11 @@ npm run build
 
 ## 📜 License
 
-License information has not been specified yet.
+Copyright © 2026 Colasaiko. All Rights Reserved.
+
+This repository is provided for viewing and reference purposes only.
+No permission is granted to copy, reproduce, modify, redistribute, republish, sublicense, sell, or deploy this source code or any substantial portion of it without prior written permission.
+
+The content of BestJichang.com, including articles, images, logos, branding, and other original materials, is protected by copyright and is not covered by any open-source license.
+
+This repository may not be used to create, operate, or deploy a substantially similar website or service without prior written permission.
