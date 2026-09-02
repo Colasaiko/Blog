@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && npm run check-seo && node scripts/indexnow.js",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check-seo": "node scripts/check-seo.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
