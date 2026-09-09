@@ -14,6 +14,8 @@ nextSlug: "tools-02"
 
 今天就来用通俗易懂的语言，为你彻底揭开 sing-box 的神秘面纱，帮助你从零开始建立对这款强大工具的完整认知。
 
+许多 iOS 用户首选 Shadowrocket，搭配专用的 [Shadowrocket 机场推荐](/shadowrocket-airports/)，可以获得最佳体验。
+
 ## 基本概念
 
 要搞清楚 sing-box，我们首先需要明确它的本质定位。

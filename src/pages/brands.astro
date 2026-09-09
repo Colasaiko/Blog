@@ -4,8 +4,8 @@ import TrustBadge from '../components/TrustBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const title = "优质机场与网络加速服务商品牌介绍与完整排行榜 | 好机场";
-const description = "精选优质机场与网络加速服务商品牌评测、测速、价格与套餐推荐。详细解析 IPLC/IEPL 专线及高性价比优质网络服务商特点，助您选择最佳方案。";
+const title = "2026机场排行榜：品牌评测、价格、线路与优惠 | 好机场";
+const description = "汇总2026机场排行榜与品牌评测，整理套餐价格、优惠码、IPLC/IEPL线路、客户端支持、流媒体与AI解锁信息，并明确区分本站实测数据与官方公开资料。";
 
 // Fetch posts if we still want to show brand review articles at the bottom
 const posts = (await getCollection('blog'))
@@ -27,7 +27,7 @@ const jsonLd = JSON.stringify({
       "@type": "CollectionPage",
       "@id": `${currentUrl}#webpage`,
       "url": currentUrl,
-      "name": `${title} | 好机场`,
+      "name": `${title}`,
       "description": description
     },
     {
@@ -75,7 +75,7 @@ const allBrands = [
 ];
 ---
 
-<BaseLayout title={`${title} | 好机场`} description={description} image="/og/og-brands.jpg">
+<BaseLayout title={title} description={description} image="/og/og-brands.jpg">
   
 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:flex lg:gap-12 relative">
   <!-- 侧边栏目录 -->

@@ -10,7 +10,7 @@ const jsonLd = JSON.stringify({
       "@id": "https://bestjichang.com/#website",
       "url": "https://bestjichang.com/",
       "name": "好机场",
-      "description": "专业的网络线路与工具使用指南"
+      "description": "整理2026机场推荐与实测数据，覆盖稳定机场、便宜机场、IPLC/IEPL专线、套餐价格、优惠码、Clash与Shadowrocket兼容性，并按线路、速度、晚高峰表现和使用场景持续更新。"
     },
     {
       "@type": "Organization",
@@ -25,6 +25,9 @@ const jsonLd = JSON.stringify({
   ]
 });
 
+const title = "2026机场推荐：稳定、便宜、专线机场排行榜与实测 | 好机场";
+const description = "整理2026机场推荐与实测数据，覆盖稳定机场、便宜机场、IPLC/IEPL专线、套餐价格、优惠码、Clash与Shadowrocket兼容性，并按线路、速度、晚高峰表现和使用场景持续更新。";
+
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
@@ -32,12 +35,12 @@ const posts = (await getCollection('blog')).sort(
 const featuredPosts = posts.filter(p => p.data.featured && p.data.coverImage).slice(0, 4);
 
 const recommendedSlugs = [
-  'mac-client-comparison',
-  'copilot-connection-issues',
-  'perplexity-what-is',
-  'poe-upload-file',
+  'top-4-recommended-airports',
   'mac-clash-verge-rev',
-  'grok-prompt-guide'
+  'review-01-weifeng',
+  'review-02-feimao',
+  'clash-06',
+  'adv-09'
 ];
 const recommendedPosts = recommendedSlugs.map(slug => posts.find(p => p.slug === slug)).filter(Boolean);
 
@@ -45,7 +48,7 @@ const rankings = [
   { rank: 1, name: '微风', audience: '日常上网、流媒体爱好者', features: '全 IPLC 专线，不限制设备接入数量', platforms: 'Win / Mac / iOS / Android', slug: 'review-01-weifeng' },
   { rank: 2, name: '飞猫', audience: '多设备重度用户', features: '最高 2.5Gbps 速率，原生 IP 解锁', platforms: '全平台及主流路由器', slug: 'review-02-feimao' },
   { rank: 3, name: 'Sogo', audience: '进阶用户、企业级需求', features: 'VLESS 协议，企业级 IEPL 专线', platforms: 'Win / Mac / iOS / Android / OpenWrt', slug: 'review-03-sogo' },
-  { rank: 4, name: '幕光', audience: '追求极简的备用选择', features: 'BGP 多线智能调度，专线级出口架构', platforms: 'Win / Mac / iOS / Android', slug: 'review-04-muguang' },
+  { rank: 4, name: '暮光', audience: '追求极简的备用选择', features: 'BGP 多线智能调度，专线级出口架构', platforms: 'Win / Mac / iOS / Android', slug: 'review-04-muguang' },
 ];
 
 const guidePosts = posts
@@ -54,16 +57,36 @@ const guidePosts = posts
   .slice(0, 10);
 
 const faqs = [
-  { q: '什么是网络工具？', a: '网络工具是帮助用户改善网络连接环境、保护隐私或实现特定网络访问需求的应用或服务集合。' },
-  { q: '网络工具和代理有什么区别？', a: '代理通常指单一的协议转发，而现代网络工具往往集成了多种协议、路由规则以及更友好的客户端界面。' },
-  { q: '新手应该怎么选择？', a: '新手可以优先关注平台支持、线路类型、设备兼容性、套餐结构、服务条款和售后方式，再根据自己的实际需求选择。' },
-  { q: '手机和电脑可以使用吗？', a: '绝大多数优秀的网络工具都支持多平台，包括 Windows、macOS、iOS 和 Android，并提供对应的客户端。' }
+  {
+    q: '2026 年机场应该怎么选？',
+    a: '在选择机场推荐服务时，首先要明确您的使用需求。如果是流媒体重度用户，建议选择标注解锁 Netflix/Disney+ 的原生 IP 节点；如果是游戏或对延迟要求极高的用户，专线机场推荐（如 IPLC/IEPL）是首选。同时需结合您的预算，对比机场排行榜中不同套餐的价格，选择最适合的稳定机场。'
+  },
+  {
+    q: '便宜机场和专线机场有什么区别？',
+    a: '便宜机场推荐通常采用公网隧道或 BGP 中继，性价比高，但在晚高峰可能会出现偶尔的拥塞和降速。专线机场（如 IPLC/IEPL 线路）直接通过内网专线跨境传输，不经过国际公网，极大降低了被干扰的概率，在晚高峰表现最为稳定，但价格往往较高。'
+  },
+  {
+    q: 'IPLC 和 IEPL 哪种更稳定？',
+    a: 'IPLC 和 IEPL 均属于专线级别的网络方案，在机场排行榜的顶级服务商中均有使用。两者实际使用体验上相差不大，都能够提供极低的延迟与几乎不受墙干扰的晚高峰稳定性表现，通常都属于最稳定的机场类别。'
+  },
+  {
+    q: 'Clash 和 Shadowrocket 可以使用同一个机场订阅吗？',
+    a: '绝大多数的 2026 机场推荐服务商都会同时提供 Clash 和 Shadowrocket (小火箭) 的订阅格式。您只需在服务商后台复制对应的订阅链接或 API 导入，即可在不同平台的客户端中同步您的节点和线路规则。'
+  },
+  {
+    q: '晚高峰怎么判断机场是否稳定？',
+    a: '晚高峰（通常为晚上 8 点到 11 点）是跨国公网最拥堵的时段。要判断是否是稳定机场，可以查看本站 2026 机场排行榜中的实测数据，或者使用具有测速功能的客户端（如 Clash Verge）在晚高峰时段对节点进行真实的 YouTube 4K 播放测试和丢包率检测。'
+  },
+  {
+    q: '机场排行榜依据什么进行排序？',
+    a: '好机场的 2026 机场推荐排行榜依据线路类型（专线/中继）、套餐价格、客户端兼容性、以及本站实测与官方公开资料进行综合评估。排名不代表绝对好坏，仅供参考，建议结合最低试用套餐自行感受。'
+  }
 ];
 
 const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置', '网络优化', '隐私保护探索'];
 ---
 
-<BaseLayout title="2026年机场推荐与网络工具测速榜单：节点、价格及客户端全方位核验" description="本站为您提供2026年最新、最真实的机场与网络加速工具测速核验数据。通过对各大服务商节点状态、起步价格、主流客户端支持情况及流媒体解锁能力的深度实测，拒绝虚假营销，用真实抽样数据帮您选择最合适的国际网络加速方案，助您找到优质好用的VPN。" jsonLd={jsonLd} image="/og/og-home.jpg">
+<BaseLayout title={title} description={description} jsonLd={jsonLd} image="/og/og-home.jpg">
 
   <!-- Subtle Background Pattern -->
   <div class="absolute inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 opacity-80 h-[600px] pointer-events-none"></div>
@@ -76,11 +99,11 @@ const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置',
         <!-- Left: Text Content -->
         <div class="flex-1 text-center lg:text-left z-10">
           <h1 class="reveal-el text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
-            全球网络优化引擎：<br class="sm:hidden" />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">为您精选 2026 高能节点与加速服务</span>
+            2026 机场推荐：<br class="sm:hidden" />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">稳定、便宜、专线机场排行榜</span>
           </h1>
           <p class="reveal-el reveal-delay-100 max-w-2xl mx-auto lg:mx-0 text-lg sm:text-xl text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-            从晚高峰 4K 丝滑秒开，到原生环境无缝畅联 ChatGPT，为您深度解析 2026 前沿的网络优化与专线趋势。
+            找寻最适合您的 2026 机场推荐？我们为您整理了真实深度的机场排行榜，无论是追求极致速度的稳定机场推荐、主打高性价比的便宜机场推荐，还是适合高端玩家的专线机场推荐（IPLC/IEPL），本站提供详尽的价格评测与客户端教程，助您畅享无界网络。
           </p>
           <div class="reveal-el reveal-delay-200 flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
             <a href="/brands/" class="group relative inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary-600 text-white font-semibold text-base transition-all duration-200 ease-out hover:bg-primary-700 hover:-translate-y-[1px] hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-950 motion-reduce:transition-none motion-reduce:hover:transform-none">
@@ -114,9 +137,9 @@ const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置',
               <source src="/video/network-world.mp4" type="video/mp4">
             </video>
             <!-- AI Tag -->
-            <a href="/ai/#ai-video" class="absolute bottom-4 right-4 bg-black/50 hover:bg-primary-600/90 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 flex items-center space-x-2 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary-500/30 group">
+            <a href="/brands/" class="absolute bottom-4 right-4 bg-black/50 hover:bg-primary-600/90 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 flex items-center space-x-2 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary-500/30 group">
               <svg class="w-4 h-4 text-purple-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-              <span class="text-xs sm:text-sm font-semibold text-white/90 group-hover:text-white tracking-wide transition-colors">学习如何用 AI 制作同款影片 &rarr;</span>
+              <span class="text-xs sm:text-sm font-semibold text-white/90 group-hover:text-white tracking-wide transition-colors">了解如何选择适合您的机场线路 &rarr;</span>
             </a>
           </div>
         </div>
@@ -128,7 +151,7 @@ const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置',
     <section id="explore" class="reveal-el max-w-5xl mx-auto px-4 mb-20 scroll-mt-24">
       <div class="border-t border-slate-100 dark:border-slate-800/60 pt-6">
         <div class="text-center mb-6">
-          <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">2026 全球网络优化六大场景</h2>
+          <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">2026 机场选择与优化六大场景</h2>
           <p class="text-sm text-slate-500 mt-2">从晚高峰 4K 丝滑秒开，到原生环境无缝畅联 ChatGPT</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -195,9 +218,52 @@ const networkTags = ['客户端下载', 'AI 工具指南', '代理规则配置',
     </section>
     
     <!-- 推荐排行榜 -->
-    <section id="rankings" class="max-w-4xl mx-auto px-4 scroll-mt-24">
+    
+    <!-- Top Categories / Topic Links -->
+    <section id="topic-links" class="max-w-7xl mx-auto px-4 py-8 scroll-mt-24">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl lg:text-4xl font-bold mb-4 tracking-tight text-slate-900 dark:text-white">按需求选择机场</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">根据您的使用习惯、预算和客户端，探索细分领域的优质节点推荐。</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="/brands/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">稳定机场推荐</h3>
+          <p class="text-xs text-slate-500 mt-1">晚高峰不卡顿的高端选择</p>
+        </a>
+        <a href="/cheap-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">便宜机场推荐</h3>
+          <p class="text-xs text-slate-500 mt-1">高性价比与平价套餐</p>
+        </a>
+        <a href="/iplc-iepl-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">专线机场推荐</h3>
+          <p class="text-xs text-slate-500 mt-1">IPLC / IEPL 内网专线</p>
+        </a>
+        <a href="/pay-as-you-go-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">按量计费机场</h3>
+          <p class="text-xs text-slate-500 mt-1">不限时流量包 / 备用节点</p>
+        </a>
+        <a href="/clash-best-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">Clash 机场推荐</h3>
+          <p class="text-xs text-slate-500 mt-1">完美兼容 Clash / Verge</p>
+        </a>
+        <a href="/shadowrocket-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">Shadowrocket 机场</h3>
+          <p class="text-xs text-slate-500 mt-1">小火箭一键导入支持</p>
+        </a>
+        <a href="/ai-chatgpt-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">ChatGPT 机场</h3>
+          <p class="text-xs text-slate-500 mt-1">AI 解锁 / 原生 IP 节点</p>
+        </a>
+        <a href="/streaming-airports/" class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-shadow text-center group">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary-600 transition-colors">流媒体机场推荐</h3>
+          <p class="text-xs text-slate-500 mt-1">Netflix / Disney+ 4K 解锁</p>
+        </a>
+      </div>
+    </section>
+
+<section id="rankings" class="max-w-4xl mx-auto px-4 scroll-mt-24">
       <div class="text-center mb-12">
-        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">网络工具推荐排行榜</h2>
+        <h2 class="reveal-el text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">2026 机场推荐排行榜</h2>
         <div class="reveal-el reveal-delay-100 w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10 mb-10">

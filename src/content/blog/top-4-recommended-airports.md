@@ -2,8 +2,8 @@
 title: "2026年四大精选机场推荐（含价格、线路及优惠信息）"
 keywords: "网络线路节点, IPLC专线, BGP中继, 节点测速, 订阅服务, 线路配置"
 description: "根据最新测速与稳定性表现，为您详细整理微风、飞猫、Sogo、暮光四大主力机场的套餐价格、特色线路与官方购买链接。"
-pubDate: 2026-08-20
-updatedDate: 2026-08-19
+pubDate: 2026-08-19
+updatedDate: 2026-08-20
 author: "好机场编辑部"
 category: "品牌介绍"
 tags:
