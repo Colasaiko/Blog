@@ -190,7 +190,7 @@ AI 最容易翻车的地方之一，就是你直接丢给它一句“帮我生�
 
 ## 相关文章推荐
 
-* [AI 图片怎么生成？](/blog/ai-image-02-illustration/)
-* [Text to Video 和 Image to Video 有什么区别？](/blog/ai-video-11-t2v-vs-i2v/)
-* [AI 视频为什么会变形？](/blog/ai-video-12-distortion/)
-* [不会代码，如何让 AI 帮你制作一个网站？](/blog/ai-site-31-nocode/)
+* AI 图片怎么生成？
+* Text to Video 和 Image to Video 有什么区别？
+* AI 视频为什么会变形？
+* 不会代码，如何让 AI 帮你制作一个网站？

@@ -55,5 +55,5 @@ Perplexity Pro Search（以前称为 Copilot）是一种深度搜索模式。当
 - [Perplexity 官方网站](https://www.perplexity.ai/)
 
 ## 相关文章
-- [Perplexity AI 基础使用教程](/blog/perplexity-basic-guide)
-- [如何利用 AI 工具提升研究效率](/blog/ai-research-efficiency)
+- Perplexity AI 基础使用教程
+- 如何利用 AI 工具提升研究效率

@@ -16,7 +16,7 @@ nextSlug: "tools-05"
 
 今天就来为你通俗透彻地讲解 sing-box 中的规则体系：规则是如何定义的、它是如何判断流量去向的，以及如何利用规则打造丝滑的网络体验。
 
-使用 ChatGPT 等 AI 工具时，经常遇到封号或报错？建议使用纯净线路的 [AI机场推荐](/ai-chatgpt-airports/)。
+使用 ChatGPT 等 AI 工具时，经常遇到封号或报错？建议使用纯净线路的 [AI机场推荐](/blog/ai-chatgpt-airports/)。
 
 ## 基本概念
 

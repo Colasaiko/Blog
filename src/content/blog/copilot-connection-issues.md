@@ -89,4 +89,4 @@ A: 这通常是浏览器的弹窗拦截器阻止了微软的登录认证机制�
 - 微软账号支持与帮助中心：[support.microsoft.com/account-billing](https://support.microsoft.com/account-billing)
 
 ## 相关文章
-- 如果按照本文操作依然无法解决问题，请参考我们的 [网络与连接排障指南](/blog/network-troubleshooting-guide) 获取更深入的系统网络设置教程。
+- 如果按照本文操作依然无法解决问题，请参考我们的 网络与连接排障指南 获取更深入的系统网络设置教程。

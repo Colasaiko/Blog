@@ -76,5 +76,5 @@ A: 这种情况多半是网页端浏览器的本地设置问题，请尝试重�
 - [X 平台帮助中心](https://help.twitter.com)
 
 ## 相关文章
-- [网络异常或代理连接问题排查指南](/blog/network-troubleshooting)
-- [X Premium 订阅与权限详解](/blog/x-premium-features)
+- 网络异常或代理连接问题排查指南
+- X Premium 订阅与权限详解

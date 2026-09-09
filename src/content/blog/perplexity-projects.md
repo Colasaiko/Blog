@@ -70,5 +70,5 @@ Perplexity Projects 类似于一个“文件夹”或“独立的工作空间”
 
 ## 相关文章
 
-- [Perplexity 怎么使用？基础功能完全指南](/perplexity-tutorial)
-- [Perplexity Pro 会员值得买吗？](/perplexity-pro-review)
+- Perplexity 怎么使用？基础功能完全指南
+- Perplexity Pro 会员值得买吗？

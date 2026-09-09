@@ -75,5 +75,5 @@ keywords: "Poe Memory, Poe临时聊天"
 - [Poe 隐私政策](https://poe.com/privacy)
 
 ## 相关文章
-- [Poe 是什么？如何使用 Poe 聚合平台？](/blog/what-is-poe)
-- [如何创建你自己的 Poe 机器人？](/blog/create-poe-bot)
+- Poe 是什么？如何使用 Poe 聚合平台？
+- 如何创建你自己的 Poe 机器人？

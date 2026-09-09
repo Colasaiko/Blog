@@ -17,7 +17,7 @@ Clash 似乎已经成为了代理客户端的代名词。但是，对于刚入�
 
 这篇文章将为你揭开 Clash 的神秘面纱，带你全面了解这款改变了网络工具生态的神器。
 
-在配置 Clash 之前，建议您先选择一个完美支持 Clash 的订阅节点，可以参考我们的 [2026 Clash 机场推荐](/clash-best-airports/)。
+在配置 Clash 之前，建议您先选择一个完美支持 Clash 的订阅节点，可以参考我们的 [2026 Clash 机场推荐](/blog/clash-best-airports/)。
 
 ## 基本概念：什么是 Clash 的真身？
 

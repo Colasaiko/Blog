@@ -8,7 +8,7 @@ tags: [Clash Verge Rev, Mac客户端, 网络工具, 教程]
 keywords: "Mac客户端下载, Mac客户端, macOS客户端, Clash Verge Rev Mac, Clash Verge Rev 下载"
 ---
 
-配合本站精选的 [Clash 机场推荐](/clash-best-airports/) 使用，体验更佳。
+配合本站精选的 [Clash 机场推荐](/blog/clash-best-airports/) 使用，体验更佳。
 
 ## Clash Verge Rev 是什么？
 

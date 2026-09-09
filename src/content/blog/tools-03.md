@@ -16,7 +16,7 @@ nextSlug: "tools-04"
 
 今天就来用最接地气的比喻，为你系统拆解 sing-box 配置文件的内部世界。
 
-想要流畅观看海外流媒体，必须选择具有原生 IP 解锁能力的 [流媒体机场推荐](/streaming-airports/)。
+想要流畅观看海外流媒体，必须选择具有原生 IP 解锁能力的 [流媒体机场推荐](/blog/streaming-airports/)。
 
 ## 基本概念
 

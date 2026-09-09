@@ -52,7 +52,7 @@ export default defineConfig({
     tailwind(),
     mdx(),
     sitemap({
-      filter: (page) => !page.includes("/api/") && !page.includes("/admin/") && !page.includes("/404"),
+      filter: (page) => !page.includes("/api/") && !page.includes("/admin/") && !page.includes("/404") && !page.endsWith("/airport") && !page.endsWith("/airport/"),
       serialize(item) {
         // Parse pathname from item.url
         try {

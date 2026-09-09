@@ -111,7 +111,7 @@ keywords: "Mac客户端下载, Mac客户端安装, macOS客户端, Mac客户端�
 
 你可以参考以下文章进一步了解：
 - [客户端是什么？](/blog/ai-network-50-what-is-client)
-- [什么是 DNS？](/blog/ai-network-15-what-is-dns)
+- 什么是 DNS？
 - [什么是网络线路？](/blog/ai-network-57-network-path)
 - [AI 工具连接不上怎么办？](/blog/ai-network-01-connection-issue)
 

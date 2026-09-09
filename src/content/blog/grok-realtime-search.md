@@ -61,5 +61,5 @@ Grok 的实时搜索功能，是利用其对 X（推特）平台的独家数据�
 
 ## 相关文章
 
-*   [Grok 是什么？新手入门指南](/blog/what-is-grok)
-*   [如何订阅 X Premium 获取 Grok 使用权限？](/blog/how-to-subscribe-x-premium)
+*   Grok 是什么？新手入门指南
+*   如何订阅 X Premium 获取 Grok 使用权限？

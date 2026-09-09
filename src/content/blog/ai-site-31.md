@@ -57,5 +57,5 @@ author: "好机场编辑部"
 *   [Webflow 官网](https://webflow.com/)
 
 ## 相关文章
-*   [如何让 AI 帮你生成 HTML？](/blog/ai-site-32)
-*   [如何让 AI 帮你制作 Tailwind CSS 页面？](/blog/ai-site-34)
+*   如何让 AI 帮你生成 HTML？
+*   如何让 AI 帮你制作 Tailwind CSS 页面？
