@@ -45,3 +45,14 @@ Clash（包括 Clash Verge Rev、Clash for Windows、ClashX）是各平台最主
 - **节点为什么会全部超时 (Timeout)？** 可能是系统时间未同步，或者需要更新订阅链接。
 
 如需查看更多稳定、便宜的品牌比较，请参考 [2026 机场排行榜](/brands/)。
+
+
+
+## 学习路径推荐
+如果您是第一次接触 Clash 客户端，我们建议您按照以下路径学习，以最大化利用本站推荐的机场节点：
+1. **基础认知**：了解什么是[节点与订阅](/blog/guide-04/)。
+2. **下载安装**：获取 [Clash Verge Rev](/blog/mac-clash-verge-rev/) 等最新分支版本。
+3. **配置进阶**：学习如何使用 URL Test 与 TUN 模式（参见 [URL Test详解](/blog/clash-23-url-test-tun/)）。
+4. **故障排查**：遇到 Timeout 时不要慌张，查阅 [故障排查指南](/blog/clash-24-troubleshooting/)。
+
+*参考结构借鉴自：[ClashWiki: 新手学习路径体系](https://clashwiki.blog/topics/beginners/)*

@@ -49,3 +49,11 @@ category: "进阶网络概念"
 - **IPLC 和 IEPL 有什么区别？** IPLC 是传统的物理层专线，而 IEPL 是基于以太网的二层专线，通常组网更灵活，但在最终用户的体感上，两者的稳定性都属于第一梯队。
 
 想要了解更多关于各家机场的起步价格，请查看 [2026 机场排行榜](/brands/)。
+
+
+
+## 技术延伸：深入理解专线与中转
+根据外部公开资料整理：
+*参考资料：[机场猫：IPLC、IEPL与BGP线路通俗解析](https://jichangmao.com/blog/iplc-iepl-bgp-explained/)*
+
+相比于传统的 BGP 公网中转，**IPLC** (International Private Leased Circuit) 实现了跨国物理内网传输，数据不会经过 GFW 的审查节点。而 **IEPL** (International Ethernet Private Line) 则是基于以太网技术的升级版。对于用户侧而言，两者的体感差异不大，都代表了目前科学上网稳定性与低延迟的天花板。
