@@ -135,3 +135,5 @@ nextSlug: "clash-15"
 * [Mihomo (原 Clash Meta) 官方 Wiki](https://wiki.metacubex.one/) - 权威的配置文档与规则集说明
 * [Mihomo 官方 GitHub 仓库](https://github.com/MetaCubeX/mihomo) - 核心引擎源码与 Release 发布
 * [Clash Verge Rev 等图形化界面源码](https://github.com/clash-verge-rev/clash-verge-rev) - 开源客户端生态库\n
+
+> **延伸阅读**：优质的机场通常会在您导入订阅时，自动下发优化好的代理组与分流规则（Rules）。如果您需要开箱即用的体验，请查看 **[2026 Clash 机场推荐](/blog/clash-best-airports/)** 获取支持一键导入的机场列表。

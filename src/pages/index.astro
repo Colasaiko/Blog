@@ -26,11 +26,25 @@ const jsonLd = JSON.stringify({
 });
 
 const title = "2026机场推荐：稳定、便宜、专线机场排行榜与实测 | 好机场";
-const description = "整理2026机场推荐与实测数据，覆盖稳定机场、便宜机场、IPLC/IEPL专线、套餐价格、优惠码、Clash与Shadowrocket兼容性，并按线路、速度、晚高峰表现和使用场景持续更新。";
+const description = "2026年机场推荐与实测数据，覆盖稳定机场、便宜机场、IPLC/IEPL专线、套餐价格、优惠码、Clash与Shadowrocket兼容性，按线路、晚高峰表现和使用场景持续更新。";
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const allPosts = await getCollection('blog');
+const priorityKeywords = ['机场', '评测', 'Clash', '线路', '节点', '稳定'];
+
+const posts = allPosts.sort((a, b) => {
+  const aTitle = a.data.title || '';
+  const bTitle = b.data.title || '';
+  
+  const aIsPriority = priorityKeywords.some(kw => aTitle.includes(kw));
+  const bIsPriority = priorityKeywords.some(kw => bTitle.includes(kw));
+
+  // If one is priority and the other is not, the priority one comes first
+  if (aIsPriority && !bIsPriority) return -1;
+  if (!aIsPriority && bIsPriority) return 1;
+
+  // Otherwise fallback to date
+  return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+});
 
 const featuredPosts = posts.filter(p => p.data.featured && p.data.coverImage).slice(0, 4);
 

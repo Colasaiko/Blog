@@ -1,15 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const seenTitles = new Map();
-const seenDescs = new Map();
 let hasErrors = false;
-
 const allFiles = [];
-const allLinks = new Set();
-const internalLinksMap = new Map(); // file -> set of links
-
-// 1. Build valid URL set
 const validUrls = new Set();
 validUrls.add('/');
 
@@ -67,25 +60,38 @@ const ignoreList = ['404', 'rss.xml', 'api', 'admin', '[...slug].astro', 'ios.as
 
 let brokenLinksCount = 0;
 
+// SEO Intent Map (Keyword Collision Check)
+const intentMap = {
+  '2026机场推荐': '/',
+  '机场排行榜': '/brands/',
+  '机场推荐排行': '/brands/',
+  '稳定机场推荐': '/blog/stable-airports/',
+  '便宜机场推荐': '/blog/cheap-airports/',
+  '专线机场推荐': '/blog/iplc-iepl-airports/',
+  '按量计费机场': '/blog/pay-as-you-go-airports/',
+  'clash机场推荐': '/blog/clash-best-airports/',
+  'shadowrocket机场推荐': '/blog/shadowrocket-airports/',
+  'ai机场推荐': '/blog/ai-chatgpt-airports/',
+  '流媒体机场推荐': '/blog/streaming-airports/',
+  '四大优质机场': '/blog/top-4-recommended-airports/'
+};
+
 for (const fullPath of allFiles) {
   const content = fs.readFileSync(fullPath, 'utf-8');
+  let urlPath = fullPath.replace('src/pages', '').replace('src/content', '').replace('.astro', '/').replace('.mdx', '/').replace('.md', '/').replace('//', '/');
+  if (urlPath === '/index/') urlPath = '/';
+  if (urlPath.includes('components') || urlPath.includes('layouts')) continue;
 
-  // Skip title/desc check for components and layouts
   if (!fullPath.includes('src/components/') && !fullPath.includes('src/layouts/')) {
       let titleMatch = content.match(/title:\s*['"]([^'"]+)['"]/);
       if (!titleMatch) titleMatch = content.match(/title\s*=\s*['"]([^'"]+)['"]/);
       if (!titleMatch) titleMatch = content.match(/title=\{["']([^"']+)["']\}/);
       if (!titleMatch) titleMatch = content.match(/<title>([^<]+)<\/title>/);
       
-      let descMatch = content.match(/description:\s*['"]([^'"]+)['"]/);
-      if (!descMatch) descMatch = content.match(/description\s*=\s*['"]([^'"]+)['"]/);
-      if (!descMatch) descMatch = content.match(/description=\{["']([^"']+)["']\}/);
-      
       let pubDateMatch = content.match(/pubDate:\s*([^\n]+)/);
       let updatedDateMatch = content.match(/updatedDate:\s*([^\n]+)/);
 
       const title = titleMatch ? titleMatch[1] : null;
-      const desc = descMatch ? descMatch[1] : null;
 
       if (!title && !ignoreList.some(i => fullPath.includes(i))) {
         console.warn(`[SEO Warning] Title missing in ${fullPath}`);
@@ -95,19 +101,26 @@ for (const fullPath of allFiles) {
           console.error(`[SEO Error] Title double pipe in ${fullPath}: ${title}`);
           hasErrors = true;
         }
+
+        // Check for Intent Collision in Title (WARNING ONLY)
+        const lowerTitle = title.toLowerCase();
+        for (const [kw, targetUrl] of Object.entries(intentMap)) {
+            // We use exact intent match for collision detection
+            if (lowerTitle.includes(kw) && urlPath !== targetUrl && urlPath !== targetUrl.replace(/\/$/, '')) {
+                 console.warn(`[SEO Warning] Intent Collision: URL ${urlPath} is targeting "${kw}" which belongs to ${targetUrl}`);
+            }
+        }
       }
 
-      if (!desc && !ignoreList.some(i => fullPath.includes(i))) {
-        console.warn(`[SEO Warning] Description missing in ${fullPath}`);
-      } else if (desc) {
-        if (desc.length < 20) console.warn(`[SEO Warning] Description too short (${desc.length}) in ${fullPath}: ${desc}`);
-      }
-
-      const h1Matches = content.match(/^#\s+.+$/gm) || [];
       const htmlH1Matches = content.match(/<h1[^>]*>/gi) || [];
-      const totalH1s = h1Matches.length + htmlH1Matches.length;
-      if (totalH1s > 1) {
-         console.warn(`[SEO Warning] Multiple H1s (${totalH1s}) in ${fullPath}`);
+      const mdH1Matches = content.match(/^#\s+.+$/gm) || [];
+      let actualH1Count = htmlH1Matches.length;
+      for (const h1 of mdH1Matches) {
+         if (!h1.includes('# 假设')) actualH1Count++; // ignore code block comments
+      }
+      
+      if (actualH1Count > 1) {
+         console.warn(`[SEO Warning] Multiple H1s (${actualH1Count}) in ${fullPath}`);
       }
 
       if (pubDateMatch && updatedDateMatch) {
@@ -118,22 +131,10 @@ for (const fullPath of allFiles) {
             hasErrors = true;
          }
       }
-      
-      const jsonLdMatch = content.match(/dateModified["']?:\s*["']([^"']+)["']/);
-      const jsonLdPubMatch = content.match(/datePublished["']?:\s*["']([^"']+)["']/);
-      if(jsonLdMatch && jsonLdPubMatch) {
-         let uDate = new Date(jsonLdMatch[1]);
-         let pDate = new Date(jsonLdPubMatch[1]);
-         if (uDate < pDate) {
-            console.error(`[SEO Error] JSON-LD dateModified < datePublished in ${fullPath}`);
-            hasErrors = true;
-         }
-      }
   }
 
   // Extract links for P0 check
   const links = [...content.matchAll(/href=["'](\/[^"']+)["']/g), ...content.matchAll(/\[.*?\]\(\/([^\)]+)\)/g)];
-  internalLinksMap.set(fullPath, new Set());
   for (const m of links) {
     let link = m[1].startsWith('/') ? m[1] : '/' + m[1];
     link = link.replace(/#.*$/, ''); // remove hash

@@ -58,3 +58,6 @@ sing-box 作为一个跨平台工具，其官方客户端涵盖了 macOS、iOS�
 sudo xattr -r -d com.apple.quarantine /Applications/sing-box.app
 ```
 *(注：执行此命令需要输入您的开机密码以获取管理员权限)*
+
+
+> **延伸阅读**：如果您配置完客户端后仍无法科学上网，通常是订阅链接已失效或节点倍率耗尽。请参考我们的 **[2026 Clash 机场推荐](/blog/clash-best-airports/)**，获取支持一键导入、规则预设完善的备选方案。

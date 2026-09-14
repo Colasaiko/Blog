@@ -59,3 +59,6 @@ A: Gemini 仅在您明确授权并使用 `@Google Drive` 或 `@Google Docs` 触�
 
 **Q: 为什么我输入 `@Google Drive` 后没有反应？**
 A: 请首先检查你是否在 Gemini 的设置中开启了“扩展程序”功能，并确保网络代理规则已正确涵盖所有 Google 域名。如果网络连接不稳定或代理未正确路由 `*.google.com`，将无法正常调用。
+
+
+> **相关推荐**：如果您在访问以上 AI 工具时频繁遇到 `Access Denied` 或验证码阻拦，这通常是因为当前节点的出口 IP 被大量共享触发了风控。建议参考本站的 **[2026 AI 机场推荐](/blog/ai-chatgpt-airports/)**，选择拥有高纯净度原生 IP 的优质节点。
