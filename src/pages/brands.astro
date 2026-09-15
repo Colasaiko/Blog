@@ -51,27 +51,27 @@ const jsonLd = JSON.stringify({
 });
 
 const allBrands = [
-  { name: '微风网络', id: 'weifeng', url: 'https://wep01.breezenetaff.com/#/?code=bSnymFll', promo: 'weifeng90 (7折)', desc: '全IPLC专线，提供低延迟高速网络，不限制设备同时接入。' },
-  { name: '飞猫云', id: 'feimao', url: 'https://m1cfjgcx.feimaogfttt1.xyz/#/?code=UUcH5yh9', promo: '无', desc: '全IPLC专线网络，最高2.5Gbps高速，原生IP解锁各流媒体，支持多端同时登录。' },
-  { name: 'sogo云', id: 'sogo', url: 'https://asfdgd.sogotztz2.sbs/#/?code=JvxcPy2A', promo: 'lingmao (8折)', desc: '支持VLESS协议，企业级IEPL专线，晚高峰不卡且不限速，全线路流媒体解锁。' },
-  { name: '暮光加速', id: 'muguang', url: 'https://asfawsf.twilightttt.sbs/#/?code=1eGqV85O', promo: 'mm88 (8折)', desc: 'BGP多线路智能调度，专线级出口架构，套餐内不限速，支持8K快速加载。' },
-  { name: 'firefly', id: 'firefly', url: 'https://fvip02.fireflyaff.com/#/?code=mcYQUZxG', promo: 'firefly (8折)', desc: '不限速，IPLC专线网络，不限设备数。' },
+  { name: '微风网络', id: 'weifeng', url: 'https://edp01.breezenetaff.com/#/?code=bSnymFll', promo: 'weifeng90 (7折)', desc: '全IPLC专线，提供低延迟高速网络，不限制设备同时接入。' },
+  { name: '飞猫云', id: 'feimao', url: 'https://flycat1.flycatvipaff.cc/#/?code=UUcH5yh9', promo: '无', desc: '全IPLC专线网络，最高2.5Gbps高速，原生IP解锁各流媒体，支持多端同时登录。' },
+  { name: 'sogo云', id: 'sogo', url: 'https://wzjc.sogoyunaff.cc/#/?code=JvxcPy2A', promo: 'lingmao (8折)', desc: '支持VLESS协议，企业级IEPL专线，晚高峰不卡且不限速，全线路流媒体解锁。' },
+  { name: '暮光加速', id: 'muguang', url: 'https://varnexa.twilightaff.com/#/?code=1eGqV85O', promo: 'mm88 (8折)', desc: 'BGP多线路智能调度，专线级出口架构，套餐内不限速，支持8K快速加载。' },
+  { name: 'firefly', id: 'firefly', url: 'https://vip02.fireflyaff.com/#/?code=mcYQUZxG', promo: 'firefly (8折)', desc: '不限速，IPLC专线网络，不限设备数。' },
   { name: '跨界云', id: 'kuajie', url: 'https://vip02.kuajieaff.com/#/?code=HRzqSLrR', promo: 'kuajie (8折)', desc: 'IPLC高端线路，所有节点x1倍率，不限制设备登录数。' },
-  { name: '闪跃', id: 'shanyue', url: 'https://wep01.flashleapaff.com/#/?code=hCwClNUi', promo: 'shanyue (8折)', desc: '全IPLC专线，原生IP解锁各大流媒体，解锁ChatGPT/Tiktok。' },
+  { name: '闪跃', id: 'shanyue', url: 'https://vip02.flashleapaff.com/#/?code=hCwClNUi', promo: 'shanyue (8折)', desc: '全IPLC专线，原生IP解锁各大流媒体，解锁ChatGPT/Tiktok。' },
   { name: '无忧链接', id: 'wuyou', url: 'https://wep01.worryfreeaff.com/#/?code=ydtFVWqU', promo: '无', desc: '全IPLC专线，稳定全球AI支持，提供4K流畅观影体验。' },
-  { name: '灵猫', id: 'lingmao', url: 'https://edp01.civetaff.com/#/?code=2Ai6V6Ub', promo: 'lingmao (8折)', desc: '全IPLC专线，原生IP解锁流媒体，提供全天在线客服指导。' },
+  { name: '灵猫', id: 'lingmao', url: 'https://vip02.civetaff.com/#/?code=2Ai6V6Ub', promo: 'lingmao (8折)', desc: '全IPLC专线，原生IP解锁流媒体，提供全天在线客服指导。' },
   { name: 'BitzNet', id: 'bitznet', url: 'https://red.bnaffred.com/#/register?code=8Hqeq4XA', promo: '无', desc: '广东IEPL专线，普通国际线路，不限制本人设备数。' },
-  { name: '星岛梦', id: 'xingdao', url: 'https://jljljfois.xdmttt4.lol/#/?code=1qBePxW1', promo: 'nmw888 (9折)', desc: '全IEPL专线，原生IP，智能路由自动择优，多设备不限量。' },
-  { name: '唯兔云', id: 'weitu', url: 'https://jifdsf.v2saat.homes/#/?code=bGS5G7xn', promo: 'rabbit (8折)', desc: '全IPLC专线，支持vless协议，增加备用直连节点。' },
-  { name: '光速云', id: 'guangsu', url: 'https://v5g.gggoltt.xyz/#/?code=GKfXFvJh', promo: '无', desc: '全球IPLC单节点至高2.5Gbps高速，原生IP解锁流媒体。' },
-  { name: 'U1S1', id: 'u1s1', url: 'https://hudeiuf.u1sat.my/#/?code=T1UVuVDP', promo: 'U1S1 (85折)', desc: 'BGP三网智能优化+IEPL专线出口，全平台ss协议支持。' },
-  { name: '极连云', id: 'jilian', url: 'https://1jdhjfeeef.jilianat.homes/#/?code=3Ci2Ynmm', promo: 'JLY888 (8折)', desc: '全IPLC专线，最大2.5Gbps高速，原生IP解锁各大流媒体。' },
-  { name: '光年梯', id: 'guangnian', url: 'https://vv3dbvb.guangnianertt1.homes/#/?code=TSYmMzYm', promo: '无', desc: '全程IPLC专线，原生IP，不限制同时在线客户端数量。' },
-  { name: '一翻云', id: 'yifan', url: 'https://bbn3uyoiu.1fyohnzt.xyz/#/?code=e61goYLt', promo: '无', desc: '解锁主流流媒体及各类AI智能工具，超值特惠。' },
-  { name: '梯子云', id: 'tizi', url: 'https://asfawsf.ladderttt.sbs/#/?code=3vf6NG2u', promo: 'tiziyun (8折)', desc: '基础中转方案+多入口智能调度，套餐内不限速，全节点1x计费倍率。' },
-  { name: 'WaveNet', id: 'wavenet', url: 'https://asfawsf.wavenetttt.homes/#/?code=YPxgLl5c', promo: 'lw888 (8折)', desc: '三网智能优化+纯专线出口，超大流量池，BGP智能路由。' },
-  { name: '灵动云', id: 'lingdong', url: 'https://asfawsf.lingdongyunttt.homes/#/?code=TIMwZeIR', promo: '880223 (8折)', desc: 'BGP三网优化专线，晚高峰不卡且不限速，原生纯净IP支持。' },
-  { name: '隐形人', id: 'yinxing', url: 'https://asfweroasf.invisiblettt.homes/#/?code=8jyAXfu3', promo: 'yxr888 (8折)', desc: '云端多链路即时优化+全链路专线架构，高速响应，节点1x计费倍率。' }
+  { name: '星岛梦', id: 'xingdao', url: 'https://kfccbb.xingdaomeng.com/#/?code=1qBePxW1', promo: 'nmw888 (9折)', desc: '全IEPL专线，原生IP，智能路由自动择优，多设备不限量。' },
+  { name: '唯兔云', id: 'weitu', url: 'https://fast.v2yunvipaff.com/#/?code=bGS5G7xn', promo: 'rabbit (8折)', desc: '全IPLC专线，支持vless协议，增加备用直连节点。' },
+  { name: '光速云', id: 'guangsu', url: 'https://mdlky.gsyaff.com/#/?code=GKfXFvJh', promo: '无', desc: '全球IPLC单节点至高2.5Gbps高速，原生IP解锁流媒体。' },
+  { name: 'U1S1', id: 'u1s1', url: 'https://pkdj7.vipaff.cc/#/?code=T1UVuVDP', promo: 'U1S1 (85折)', desc: 'BGP三网智能优化+IEPL专线出口，全平台ss协议支持。' },
+  { name: '极连云', id: 'jilian', url: 'https://kdjhao.jlyvipaff.com/#/?code=nrPTQT2i', promo: 'JLY888 (8折)', desc: '全IPLC专线，最大2.5Gbps高速，原生IP解锁各大流媒体。' },
+  { name: '光年梯', id: 'guangnian', url: 'https://ggmq.gntaff.com/#/?code=k0rrn5UQ', promo: '无', desc: '全程IPLC专线，原生IP，不限制同时在线客户端数量。' },
+  { name: '一翻云', id: 'yifan', url: 'https://wzjc.1flyunaff.cc/#/?code=e61goYLt', promo: '无', desc: '解锁主流流媒体及各类AI智能工具，超值特惠。' },
+  { name: '梯子云', id: 'tizi', url: 'https://varnexa.ladderaff.com/#/?code=3vf6NG2u', promo: 'tiziyun (8折)', desc: '基础中转方案+多入口智能调度，套餐内不限速，全节点1x计费倍率。' },
+  { name: 'WaveNet', id: 'wavenet', url: 'https://varnexa.wavenetaff.com/#/?code=pcFhy7Lb', promo: 'lw888 (8折)', desc: '三网智能优化+纯专线出口，超大流量池，BGP智能路由。' },
+  { name: '灵动云', id: 'lingdong', url: 'https://varnexa.lingdongaff.com/#/?code=TIMwZeIR', promo: '880223 (8折)', desc: 'BGP三网优化专线，晚高峰不卡且不限速，原生纯净IP支持。' },
+  { name: '隐形人', id: 'yinxing', url: 'https://varnexa.invisibleaff.com/#/?code=8jyAXfu3', promo: 'yxr888 (8折)', desc: '云端多链路即时优化+全链路专线架构，高速响应，节点1x计费倍率。' }
 ];
 ---
 

@@ -135,4 +135,4 @@ iOS 在首次使用相关网络连接功能时，可能会要求用户确认是�
 
 如果你还没有注册，或者想要了解更多服务详情，请点击下方链接前往官网：
 
-[前往查看服务详情与注册](https://wep01.breezenetaff.com/#/?code=bSnymFll)
+[前往查看服务详情与注册](https://edp01.breezenetaff.com/#/?code=bSnymFll)
