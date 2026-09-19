@@ -18,23 +18,37 @@ const getSitemapDates = () => {
         const slug = file.replace(/\.mdx?$/, '');
         
         let lastMod = null;
-        const updatedMatch = content.match(/updatedDate:\s*([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+        const updatedMatch = content.match(/updatedDate:\s*(['"]?[0-9]{4}-[0-9]{2}-[0-9]{2}['"]?)/);
         if (updatedMatch) {
-          lastMod = new Date(updatedMatch[1]);
+          lastMod = new Date(updatedMatch[1].replace(/['"]/g, ''));
         } else {
-          const pubMatch = content.match(/pubDate:\s*([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+          const pubMatch = content.match(/pubDate:\s*(['"]?[0-9]{4}-[0-9]{2}-[0-9]{2}['"]?)/);
           if (pubMatch) {
-            lastMod = new Date(pubMatch[1]);
+            lastMod = new Date(pubMatch[1].replace(/['"]/g, ''));
           }
         }
         
-        if (lastMod) {
+        if (lastMod && !isNaN(lastMod)) {
           dates[`/blog/${slug}/`] = lastMod.toISOString();
         }
       }
     });
+
+    // Read static lastmod JSON
+    const staticLastmodPath = path.resolve('src/data/static-lastmod.json');
+    if (fs.existsSync(staticLastmodPath)) {
+      const staticLastmods = JSON.parse(fs.readFileSync(staticLastmodPath, 'utf-8'));
+      for (const [pathname, dateStr] of Object.entries(staticLastmods)) {
+        let cleanPath = pathname;
+        if (!cleanPath.endsWith('/')) cleanPath += '/';
+        const parsedDate = new Date(dateStr);
+        if (!isNaN(parsedDate)) {
+          dates[cleanPath] = parsedDate.toISOString();
+        }
+      }
+    }
   } catch (e) {
-    console.error('Error parsing blog dates for sitemap:', e);
+    console.error('Error parsing dates for sitemap:', e);
   }
   return dates;
 };
