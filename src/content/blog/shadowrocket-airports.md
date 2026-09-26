@@ -1,14 +1,14 @@
 ---
-title: "2026 Shadowrocket 机场推荐：小火箭稳定节点与订阅选购指南"
+title: "2026 Shadowrocket 机场推荐：小火箭 iOS 节点订阅指南"
 keywords: "Shadowrocket 机场推荐, 小火箭机场推荐, Shadowrocket 节点, iPhone 机场"
-description: "整理 2026 年良好兼容 Shadowrocket (小火箭) 的稳定机场推荐，对比各家的一键导入体验、节点更新速度及套餐价格，适合 iPhone / iOS 用户参考。"
+description: "整理 2026 良好兼容 Shadowrocket (小火箭) 的节点服务商。提供各机场一键导入体验、更新速度对比，专为 iPhone 机场推荐打造。"
 pubDate: 2026-09-09
 updatedDate: 2026-09-09
 author: "好机场编辑部"
 category: "品牌介绍"
 ---
 
-# 2026 Shadowrocket 机场推荐：小火箭一键导入指南
+# 2026 Shadowrocket 机场推荐：小火箭订阅与一键导入
 
 ## 搜索意图快速回答
 如果您搜索 **Shadowrocket 机场推荐** 或 **小火箭节点**，您是广大的 iOS / iPadOS 用户。Shadowrocket 是苹果设备上最普及的工具，优秀的 Shadowrocket 机场应当支持 Safari 一键唤醒导入，并提供稳定的节点支持，包括 SS、Trojan、VLESS 等各类协议。
